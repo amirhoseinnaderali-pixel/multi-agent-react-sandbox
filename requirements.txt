@@ -1,4 +1,5 @@
-docker>=6.0.0
-google-generativeai>=0.3.0
-psutil>=5.9.0
-
+google-genai
+pyyaml
+pandas
+psutil
+pytest
