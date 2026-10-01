@@ -1,157 +1,90 @@
 """
-sandbox.py - توابع ساده برای اجرای کد در sandbox
+Corrected subprocess sandbox used by the research benchmark.
+
+The key protocol rule is: stdin is supplied while the process is running,
+not after waiting for the process to exit.
 """
 
-import os
 import subprocess
 import tempfile
 import shutil
 import time
-import psutil
 
 
-def run_code_in_sandbox(code, input_data="", max_time=30, max_memory_mb=256):
-    """اجرای کد در sandbox با input"""
-    
-    # ساخت دایرکتوری موقت
+def run_code_in_sandbox(code, input_data="", max_time=8, max_memory_mb=256):
     temp_dir = tempfile.mkdtemp(prefix="sandbox_")
-    
     try:
-        # نوشتن کد در فایل
-        code_file = os.path.join(temp_dir, "solution.py")
+        code_file = f"{temp_dir}/solution.py"
         with open(code_file, "w", encoding="utf-8") as f:
             f.write(code)
-        
-        # اجرای کد
-        cmd = ["python3", code_file]
-        env = os.environ.copy()
-        env["PYTHONUNBUFFERED"] = "1"
-        
-        start_time = time.time()
-        
+
+        started = time.perf_counter()
         try:
-            # تبدیل input به bytes اگر string باشه
-            input_bytes = input_data.encode("utf-8") if isinstance(input_data, str) else input_data
-            
-            process = subprocess.Popen(
-                cmd,
+            proc = subprocess.Popen(
+                ["python3", code_file],
+                stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                stdin=subprocess.PIPE,
+                text=True,
                 cwd=temp_dir,
-                env=env
             )
-            
-            # مانیتورینگ
-            output = ""
-            error = ""
-            memory_used_mb = 0.0
+            stdout, stderr = proc.communicate(
+                input=input_data or "",
+                timeout=max_time,
+            )
             timed_out = False
-            
-            while process.poll() is None:
-                elapsed = time.time() - start_time
-                
-                # چک کردن timeout
-                if elapsed > max_time:
-                    process.terminate()
-                    try:
-                        process.wait(timeout=5)
-                    except:
-                        process.kill()
-                    timed_out = True
-                    break
-                
-                # چک کردن memory
-                try:
-                    proc_info = psutil.Process(process.pid)
-                    mem_info = proc_info.memory_info()
-                    current_memory = mem_info.rss / (1024 * 1024)
-                    memory_used_mb = max(memory_used_mb, current_memory)
-                    
-                    if current_memory > max_memory_mb:
-                        process.terminate()
-                        try:
-                            process.wait(timeout=5)
-                        except:
-                            process.kill()
-                        break
-                except:
-                    break
-                
-                time.sleep(0.1)
-            
-            # فرستادن input و خواندن خروجی
-            try:
-                stdout, stderr = process.communicate(input=input_bytes, timeout=max_time + 1)
-                output = stdout.decode("utf-8", errors="replace") if stdout else ""
-                error = stderr.decode("utf-8", errors="replace") if stderr else ""
-            except subprocess.TimeoutExpired:
-                process.kill()
-                output = ""
-                error = "Execution timeout"
-            except Exception as e:
-                output = ""
-                error = f"Error reading output: {str(e)}"
-            
-            execution_time = time.time() - start_time
-            
-            return {
-                "success": process.returncode == 0 and not timed_out,
-                "output": output,
-                "error": error,
-                "execution_time": round(execution_time, 2),
-                "memory_used_mb": round(memory_used_mb, 2),
-                "timed_out": timed_out
-            }
-            
-        except Exception as e:
-            return {
-                "success": False,
-                "output": "",
-                "error": str(e),
-                "execution_time": 0.0,
-                "memory_used_mb": 0.0,
-                "timed_out": False
-            }
-    
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            stdout, stderr = proc.communicate()
+            timed_out = True
+
+        return {
+            "success": proc.returncode == 0 and not timed_out,
+            "output": stdout,
+            "error": stderr,
+            "execution_time": round(time.perf_counter() - started, 4),
+            "timed_out": timed_out,
+            "exit_code": proc.returncode,
+            "memory_limit_mb": max_memory_mb,
+            "memory_limit_enforced": False,
+        }
     finally:
-        # پاک کردن دایرکتوری موقت
-        try:
-            shutil.rmtree(temp_dir)
-        except:
-            pass
+        shutil.rmtree(temp_dir, ignore_errors=True)
 
 
-def run_tests(code, test_cases, max_time=30, max_memory_mb=256):
-    """اجرای تست‌ها روی کد"""
-    
+def run_tests(code, test_cases, max_time=8, max_memory_mb=256):
     results = []
-    passed = 0
-    
     for i, test_case in enumerate(test_cases):
-        test_input = test_case.get("input", "")
-        expected = str(test_case.get("expected_output", "")).strip()
-        
-        # اجرای کد با input
-        result = run_code_in_sandbox(code, test_input, max_time, max_memory_mb)
-        
+        result = run_code_in_sandbox(
+            code,
+            input_data=test_case.get("input", ""),
+            max_time=max_time,
+            max_memory_mb=max_memory_mb,
+        )
         actual = result["output"].strip()
-        test_passed = actual == expected
-        
-        if test_passed:
-            passed += 1
-        
-        results.append({
-            "test_number": i + 1,
-            "input": test_input,
-            "expected": expected,
-            "actual": actual,
-            "passed": test_passed
-        })
-    
+        expected = str(test_case.get("expected_output", "")).strip()
+        passed = (
+            result["success"]
+            and not result["timed_out"]
+            and actual == expected
+        )
+        results.append(
+            {
+                "test_number": i + 1,
+                "input": test_case.get("input", ""),
+                "expected": expected,
+                "actual": actual,
+                "passed": passed,
+                "stderr": result["error"],
+                "execution_time": result["execution_time"],
+                "timed_out": result["timed_out"],
+            }
+        )
+
+    passed_count = sum(r["passed"] for r in results)
     return {
-        "passed": passed == len(test_cases),
-        "passed_count": passed,
-        "total_count": len(test_cases),
-        "test_results": results
+        "passed": passed_count == len(results),
+        "passed_count": passed_count,
+        "total_count": len(results),
+        "test_results": results,
     }
