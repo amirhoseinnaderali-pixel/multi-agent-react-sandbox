@@ -1,0 +1,7 @@
+model: gemini-2.5-flash
+temperature: 0.0
+max_iterations: 3
+tasks_file: benchmarks/tasks.json
+methods:
+  - direct
+  - react
