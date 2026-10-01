@@ -1,16 +1,11 @@
 {
+  "_note": "Legacy compatibility example. New experiments should use configs/*.yaml.",
   "apis": [
     {
-      "agent_id": "api_1",
+      "agent_id": "agent_01",
       "type": "google",
-      "key": "YOUR_API_KEY_HERE",
-      "model": "gemini-2.5-pro"
-    },
-    {
-      "agent_id": "api_2",
-      "type": "google",
-      "key": "YOUR_API_KEY_HERE",
-      "model": "gemini-2.5-flash"
+      "key": "SET_VIA_ENVIRONMENT_INSTEAD",
+      "model": "gemini-3.8-flash"
     }
   ],
   "test_cases": [
@@ -28,4 +23,3 @@
     }
   ]
 }
-

@@ -1,0 +1,49 @@
+method: verified_multi_agent
+benchmark: benchmarks/example.json
+output_dir: results
+seed: 7
+num_agents: 24
+max_refinement_rounds: 0
+selection_strategy: max_tests_passed
+cycle_agent_pool: true
+budget:
+  model_calls: null
+  wall_clock_seconds: null
+execution:
+  mode: auto
+  timeout_seconds: 30
+  memory_limit_mb: 512
+  docker_image: \${VMAR_DOCKER_IMAGE:-python:3.12-slim}
+agents:
+  - agent_id: agent_01
+    provider: google
+    model: \${VMAR_MODEL_A:-gemini-3.8-flash}
+    api_key_env: GEMINI_API_KEY
+    prompt_variant: standard
+    role: independent solver
+    temperature: 0.2
+    max_output_tokens: 2048
+  - agent_id: agent_02
+    provider: google
+    model: \${VMAR_MODEL_A:-gemini-3.8-flash}
+    api_key_env: GEMINI_API_KEY
+    prompt_variant: algorithmic
+    role: algorithm specialist
+    temperature: 0.2
+    max_output_tokens: 2048
+  - agent_id: agent_03
+    provider: google
+    model: \${VMAR_MODEL_B:-gemini-3.7-flash}
+    api_key_env: GEMINI_API_KEY
+    prompt_variant: edge_case
+    role: edge-case specialist
+    temperature: 0.2
+    max_output_tokens: 2048
+  - agent_id: agent_04
+    provider: google
+    model: \${VMAR_MODEL_B:-gemini-3.7-flash}
+    api_key_env: GEMINI_API_KEY
+    prompt_variant: minimalist
+    role: simplicity specialist
+    temperature: 0.2
+    max_output_tokens: 2048
