@@ -1,182 +1,84 @@
-# ReAct Docker Sandbox
+# Multi-Agent ReAct Sandbox
 
-A multi-agent problem-solving system that uses the ReAct (Reasoning + Acting) methodology to solve programming problems. The system leverages multiple AI agents (24 agents by default) to generate and test solutions in isolated Docker containers or subprocess sandboxes.
+A controlled study of execution feedback as inference-time compute for code-generating language models.
 
-## 🚀 Features
+## Research question
 
-- **Multi-Agent Architecture**: Uses 24 different AI agents to solve problems
-- **ReAct Methodology**: Implements Reasoning-Acting-Observation loops for iterative problem solving
-- **Docker Sandbox**: Executes code in isolated Docker containers for security
-- **Fallback Support**: Automatically falls back to subprocess sandbox if Docker is unavailable
-- **Test Case Validation**: Validates solutions against test cases
-- **Iterative Refinement**: Each agent can refine solutions up to 3 iterations based on error feedback
+> Does execution feedback improve held-out code correctness compared with one-shot generation?
 
-## 📋 Requirements
+`Direct` uses one generation call.
 
-- Python 3.9+
-- Docker (optional, for containerized execution)
-- Google AI API key (for Gemini models)
-- Required Python packages (see Installation)
+`ReAct` uses generate → execute visible tests → feed execution feedback back → regenerate, up to three attempts.
 
-## 🔧 Installation
+## Why the original experiment was insufficient
 
-1. Clone the repository:
+The historical factorial experiment had a useful execution-feedback idea, but the protocol was not a valid correctness benchmark:
+
+- stdin was supplied after waiting for process completion, so ordinary input()-based programs could time out;
+- only the first test case was used inside the ReAct loop;
+- process exit code was treated as correctness;
+- the loop stopped on the first process-level success;
+- API quota errors could become Python source text;
+- the benchmark used a single trivial factorial task;
+- no one-shot control condition existed.
+
+This branch keeps the historical artifact and adds a corrected experiment.
+
+## Controlled benchmark
+
+`benchmarks/tasks.json` contains six programming tasks.
+
+Each task has visible feedback tests and held-out evaluation tests.
+
+| Method | Calls/task | Feedback |
+|---|---:|---|
+| Direct | 1 | No |
+| ReAct | up to 3 | Yes |
+
+Primary metric: held-out task pass rate.
+
+Secondary metrics:
+- visible-test pass rate
+- attempts
+- model-generation latency
+- successful model calls
+
+## Run
+
+Set the API key outside the repository:
+
 ```bash
-git clone <repository-url>
-cd red
+export GOOGLE_API_KEY=...
 ```
 
-2. Install dependencies:
+Then:
+
 ```bash
-pip install docker google-generativeai psutil
+pip install -r requirements.txt
+python scripts/run_controlled.py --config configs/research.yaml
+python scripts/analyze_results.py --input results/controlled.json
 ```
 
-3. Set up configuration:
-```bash
-cp config.json.example config.json
-```
+## Hypothesis
 
-4. Edit `config.json` and add your Google AI API keys:
-```json
-{
-  "apis": [
-    {
-      "agent_id": "api_1",
-      "type": "google",
-      "key": "YOUR_API_KEY_HERE",
-      "model": "gemini-2.5-pro"
-    }
-  ],
-  "test_cases": [...]
-}
-```
+> Execution feedback will improve held-out coding correctness compared with one-shot generation, at the cost of additional inference-time compute.
 
-## 📖 Usage
+Accuracy must be interpreted together with attempts and latency.
 
-1. Create a problem file (`problem_example.txt`) with your problem description:
-```
-Problem: Calculate factorial of a number
+## Current status
 
-Write a Python function that calculates the factorial of a non-negative integer n.
-...
-```
+Implemented:
+- corrected stdin protocol
+- objective multi-test execution
+- visible-feedback / held-out-evaluation split
+- direct vs ReAct comparison
+- result logging and analysis
 
-2. Run the main script:
-```bash
-python react_docker.py
-```
+Not yet executed:
+- the controlled experiment itself
 
-The script will:
-- Load agents from `config.json`
-- Read the problem from `problem_example.txt`
-- Each agent attempts to solve the problem using ReAct methodology
-- Solutions are tested in Docker containers (or subprocess if Docker unavailable)
-- Results are saved to `results2.json`
+## Research trajectory
 
-## 🏗️ Architecture
+`iterative prompting → structured agents → executable feedback → efficient inference-time compute`
 
-### Components
-
-- **`react_docker.py`**: Main script that orchestrates the multi-agent system
-- **`api_client.py`**: Google AI API client for calling Gemini models
-- **`sandbox.py`**: Code execution sandbox (Docker or subprocess)
-- **`config.json`**: Configuration file with API keys and test cases
-
-### ReAct Loop
-
-Each agent follows this iterative process:
-
-1. **Reasoning**: Analyze the problem
-2. **Action**: Generate Python code
-3. **Observation**: Execute code in sandbox and observe results
-4. **Refinement**: If errors occur, refine the solution (up to 3 iterations)
-
-### Execution Modes
-
-- **Docker Mode** (preferred): Executes code in isolated Docker containers with resource limits
-- **Subprocess Mode** (fallback): Executes code in subprocess with memory/time limits
-
-## 📊 Output
-
-Results are saved to `results2.json` with the following structure:
-
-```json
-{
-  "total_solutions": 24,
-  "total_agents": 24,
-  "solutions_per_agent": 1,
-  "total_iterations": 48,
-  "avg_iterations_per_solution": 2.0,
-  "solutions": [
-    {
-      "agent_id": "api_1",
-      "solution_number": 1,
-      "iterations": 2,
-      "code": "...",
-      "sandbox_result": {
-        "success": true,
-        "output": "...",
-        "error": "",
-        "execution_time": 0.15
-      }
-    }
-  ]
-}
-```
-
-## 🔒 Security
-
-- Code execution is isolated in Docker containers or subprocess sandboxes
-- Resource limits: 512MB memory, 30 seconds timeout
-- Network access disabled in Docker mode
-- Temporary files are automatically cleaned up
-
-## 🛠️ Configuration
-
-### Adding More Agents
-
-Edit `config.json` and add more agent configurations:
-
-```json
-{
-  "agent_id": "api_N",
-  "type": "google",
-  "key": "YOUR_API_KEY",
-  "model": "gemini-2.5-pro"
-}
-```
-
-### Test Cases
-
-Define test cases in `config.json`:
-
-```json
-{
-  "test_cases": [
-    {
-      "input": "5\n",
-      "expected_output": "120"
-    }
-  ]
-}
-```
-
-## 📝 Notes
-
-- The system automatically detects Docker availability
-- If Docker is not available, it falls back to subprocess execution
-- Each agent can make up to 3 attempts to solve a problem
-- Solutions are validated against test cases
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📄 License
-
-This project is open source and available under the MIT License.
-
-## ⚠️ Disclaimer
-
-This tool executes arbitrary code. Use with caution and only run code from trusted sources. The Docker sandbox provides isolation, but always review code before execution.
-
+The central question is whether extra computation can be allocated selectively to improve correctness efficiently.
