@@ -69,4 +69,4 @@ If a provider does not expose token usage, token fields remain null.
 
 If pricing is not configured, cost_usd remains null.
 
-If an experiment has not been run, downstream reports should state Not yet evaluated.
+For any condition that was not run, downstream reports should state Not yet evaluated; recorded conditions must instead report their observed measurements and provenance.
