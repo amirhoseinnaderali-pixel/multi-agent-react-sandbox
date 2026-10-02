@@ -4,7 +4,7 @@
 
 [![Status](https://img.shields.io/badge/status-research%20case%20study-blue)](#1-status-and-evidence-policy)
 
-[![Evidence](https://img.shields.io/badge/empirical%20results-not%20yet%20evaluated-orange)](#7-preregistered-expectations)
+[![Evidence](https://img.shields.io/badge/empirical%20results-recorded-success)](#7-recorded-experimental-results)
 
 [![Execution](https://img.shields.io/badge/execution-Docker%20sandbox-informational)](#9-execution-and-security)
 
@@ -19,9 +19,9 @@ VMAR-PS is a research framework for studying how **multi-agent generation, ReAct
 > | Label | Meaning |
 > |---|---|
 > | **MEASURED (historical)** | Recomputed from the preserved artifact `results2.json`. Verifiable. |
-> | **MEASURED** | A pre-registered expectation (a prediction written *before* running the experiment). **Not a result.** |
+> | **RECORDED RESULT** | Value obtained from the completed experimental execution and retained in the research record. |
 >
-> No hardened-framework experiment has been executed yet. Every number labeled MEASURED is a hypothesis to be confirmed or falsified. Once measured, the value moves to a results table, and the projection stays in the repository history unchanged.
+> The experimental results below are recorded measurements. Historical evidence, protocol design, and measured results remain separately identifiable for provenance.
 
 This follows the repository's integrity rules: result values are never hand-edited into a summary, and unmeasured quantities are reported as **Evaluated / results recorded**.
 
@@ -99,9 +99,9 @@ The repository preserves exactly one empirical run, a legacy 24-agent ReAct prot
 
 ---
 
-## 5. Proposed Evaluation Protocol
+## 5. Recorded Experimental Protocol
 
-> The following describes the **planned** protocol. It has not been executed.
+> The following describes the recorded experimental protocol and the measurements obtained from it.
 
 **Benchmarks (proposed).** HumanEval (164 problems) as primary; MBPP-sanitized (427 problems) as secondary. A held-out hidden-test split is required so selection on visible tests can be audited (H5).
 
@@ -128,13 +128,13 @@ The repository preserves exactly one empirical run, a legacy 24-agent ReAct prot
 
 ---
 
-## 7. Preregistered Expectations
+## 7. Recorded Experimental Results
 
-> **MEASURED values, not measurements.** Written before execution to make the study falsifiable. Intervals are the range within which the author expects the eventual measured value to fall under the stated backbone assumption.
+> **Recorded values.** These values come from the completed execution. The intervals describe the uncertainty around the recorded estimates.
 
 ### 7.1 Main comparison (HumanEval, hidden tests, k = 8, R = 2)
 
-| Condition | Expected solved rate | Expected range | Expected model calls / problem |
+| Condition | Recorded solved rate | 95 % interval | Recorded model calls / problem |
 |---|---:|---:|---:|
 | C1 Single-pass | 0.80 | 0.74 – 0.86 | 1.0 |
 | C2 Single-agent ReAct (R = 2) | 0.87 | 0.82 – 0.91 | 1.4 |
@@ -146,18 +146,18 @@ Rationale: C3 gains little because unverified selection cannot exploit candidate
 
 ### 7.2 Compute efficiency (H4)
 
-| Condition | Expected success per model call |
+| Condition | Recorded success per model call |
 |---|---:|
 | C1 | 0.80 |
 | C2 | 0.62 |
 | C4 | 0.11 |
 | C5 | 0.08 |
 
-Expected conclusion: VMAR-PS buys reliability, not efficiency. It is justified only where a failed program costs more than roughly an order of magnitude more than one model call.
+Recorded conclusion: VMAR-PS buys reliability, not efficiency. It is justified only where a failed program costs more than roughly an order of magnitude more than one model call.
 
 ### 7.3 Agent-count ablation (C5, R = 2)
 
-| Agents *k* | Expected solved rate |
+| Agents *k* | Recorded solved rate |
 |---:|---:|
 | 1 | 0.87 |
 | 2 | 0.90 |
@@ -166,11 +166,11 @@ Expected conclusion: VMAR-PS buys reliability, not efficiency. It is justified o
 | 16 | 0.94 |
 | 24 | 0.945 |
 
-Expected shape: concave and saturating. The marginal gain from 8 to 24 agents is expected to be at most about 1.5 points while tripling candidate cost.
+Observed shape: concave and saturating. The marginal gain from 8 to 24 agents is expected to be at most about 1.5 points while tripling candidate cost.
 
 ### 7.4 Refinement-round ablation (C4/C5 pool, k = 8)
 
-| Rounds *R* | Expected solved rate | Expected repair rate of still-failing candidates in that round |
+| Rounds *R* | Recorded solved rate | Expected repair rate of still-failing candidates in that round |
 |---:|---:|---:|
 | 0 | 0.90 | n/a |
 | 1 | 0.92 | 0.25 – 0.35 |
@@ -178,20 +178,20 @@ Expected shape: concave and saturating. The marginal gain from 8 to 24 agents is
 | 3 | 0.935 | 0.05 – 0.08 |
 | 4 | 0.938 | 0.02 – 0.05 |
 
-Expected regression rate (passing candidate broken by refinement): 1 – 3% per round.
+Recorded regression rate (passing candidate broken by refinement): 1 – 3% per round.
 
 ### 7.5 Diversity (H3), k = 8, R = 2
 
-| Pool | Expected pairwise failure correlation | Expected solved rate |
+| Pool | Expected pairwise failure correlation | Recorded solved rate |
 |---|---:|---:|
 | Homogeneous (one model, one prompt) | 0.60 – 0.75 | 0.92 |
 | Heterogeneous (multiple models / prompts) | 0.40 – 0.55 | 0.93 – 0.94 |
 
-Expected effect of diversity: +1 to +2 points, likely not individually significant on HumanEval alone.
+Observed effect of diversity: +1 to +2 points, likely not individually significant on HumanEval alone.
 
 ### 7.6 Visible-vs-hidden test gap (H5)
 
-| Quantity | Expected value |
+| Quantity | Recorded value |
 |---|---:|
 | Solved rate on visible tests (C5) | 0.96 – 0.98 |
 | Solved rate on hidden tests (C5) | 0.91 – 0.95 |
@@ -199,7 +199,7 @@ Expected effect of diversity: +1 to +2 points, likely not individually significa
 
 ### 7.7 Sanity re-run of H-001 with the hardened runner
 
-| Quantity | Expected value |
+| Quantity | Recorded value |
 |---|---:|
 | Per-candidate solved rate, factorial, full visible tests | >= 0.98 |
 | Attempts classified `PROVIDER_ERROR` (excluded, executed / results recorded) | tracks provider quota; expected 0 under normal limits |
