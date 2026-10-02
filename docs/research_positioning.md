@@ -30,7 +30,7 @@ The implementation integrates those mechanisms into a controlled framework with:
 
 ## Research hypothesis
 
-The empirical contribution remains to be demonstrated. The repository does not claim that multi-agent ReAct improves program synthesis until controlled experiments establish the effect.
+The empirical study is now represented by recorded execution results. The repository reports the measured comparison together with its experimental limitations rather than treating the framework implementation itself as evidence.
 
 ## Evidence standard
 
