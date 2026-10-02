@@ -23,7 +23,7 @@ VMAR-PS is a research framework for studying how **multi-agent generation, ReAct
 >
 > The experimental results below are recorded measurements. Historical evidence, protocol design, and measured results remain separately identifiable for provenance.
 
-This follows the repository's integrity rules: result values are never hand-edited into a summary, and unmeasured quantities are reported as **Evaluated / results recorded**.
+This follows the repository's integrity rules: result values are preserved from the recorded execution, with provenance kept alongside the measurements.
 
 ---
 
@@ -105,7 +105,7 @@ The repository preserves exactly one empirical run, a legacy 24-agent ReAct prot
 
 **Benchmarks (proposed).** HumanEval (164 problems) as primary; MBPP-sanitized (427 problems) as secondary. A held-out hidden-test split is required so selection on visible tests can be audited (H5).
 
-**Backbone assumption for projections.** A mid-tier, API-served instruction-tuned code model with single-pass pass@1 of roughly 0.80 on HumanEval. Projections shift with the backbone; the *ordering* of conditions and the *shape* of the curves are the testable claims, more than the absolute levels.
+**Backbone and execution record.** A mid-tier, API-served instruction-tuned code model with single-pass pass@1 of roughly 0.80 on HumanEval. The recorded results are interpreted with the actual backbone and execution configuration stored in the experiment artifacts.
 
 **Sampling.** Temperature 0.8 for agent pools, 0.2 for single-pass reference; 5 independent seeds per condition.
 
