@@ -1,182 +1,262 @@
-# ReAct Docker Sandbox
+# VMAR-PS
 
-A multi-agent problem-solving system that uses the ReAct (Reasoning + Acting) methodology to solve programming problems. The system leverages multiple AI agents (24 agents by default) to generate and test solutions in isolated Docker containers or subprocess sandboxes.
+## Verified Multi-Agent ReAct for Iterative Program Synthesis
 
-## 🚀 Features
+VMAR-PS is a research framework for controlled experiments on program-synthesis reliability. It studies the interaction between:
 
-- **Multi-Agent Architecture**: Uses 24 different AI agents to solve problems
-- **ReAct Methodology**: Implements Reasoning-Acting-Observation loops for iterative problem solving
-- **Docker Sandbox**: Executes code in isolated Docker containers for security
-- **Fallback Support**: Automatically falls back to subprocess sandbox if Docker is unavailable
-- **Test Case Validation**: Validates solutions against test cases
-- **Iterative Refinement**: Each agent can refine solutions up to 3 iterations based on error feedback
+- multi-agent generation
+- ReAct-style iteration
+- execution feedback
+- iterative refinement
+- candidate selection
+- inference compute
 
-## 📋 Requirements
+The target research identity is VMAR-PS. The intended repository name is verified-multi-agent-react-program-synthesis.
 
-- Python 3.9+
-- Docker (optional, for containerized execution)
-- Google AI API key (for Gemini models)
-- Required Python packages (see Installation)
+## Abstract
 
-## 🔧 Installation
+The original repository was a multi-agent coding sandbox with a ReAct-like loop and Docker/subprocess execution. The refactored project makes experimental variables explicit, records attempt-level evidence, adds named baselines, separates agent diversity from iteration, introduces compute budgets, and produces machine-readable evaluation outputs.
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd red
-```
+No performance claim is made by the framework itself.
 
-2. Install dependencies:
-```bash
-pip install docker google-generativeai psutil
-```
+## Research Question
 
-3. Set up configuration:
-```bash
-cp config.json.example config.json
-```
+Does combining multiple independently configured LLM agents with execution-based feedback and iterative refinement improve executable program-synthesis reliability relative to single-agent and non-iterative baselines under controlled inference budgets?
 
-4. Edit `config.json` and add your Google AI API keys:
-```json
-{
-  "apis": [
-    {
-      "agent_id": "api_1",
-      "type": "google",
-      "key": "YOUR_API_KEY_HERE",
-      "model": "gemini-2.5-pro"
-    }
-  ],
-  "test_cases": [...]
-}
-```
+See docs/research_question.md.
 
-## 📖 Usage
+## Hypotheses
 
-1. Create a problem file (`problem_example.txt`) with your problem description:
-```
-Problem: Calculate factorial of a number
+- H1: execution-guided multi-agent ReAct may improve verified solution probability under comparable budgets.
+- H2: execution feedback may contribute independently of agent count.
+- H3: measurable diversity may reduce correlated failure.
+- H4: refinement gains may saturate.
 
-Write a Python function that calculates the factorial of a non-negative integer n.
-...
-```
+These remain hypotheses until measured.
 
-2. Run the main script:
-```bash
+## Method
+
+The core pipeline is:
+
+~~~text
+Problem
+  ↓
+Agent Pool
+  ↓
+Independent Generation
+  ↓
+Execution / Verification
+  ↓
+Observation / Error Feedback
+  ↓
+ReAct Refinement
+  ↓
+Repeated Verification
+  ↓
+Candidate Selection
+  ↓
+Final Program
+~~~
+
+Every attempt remains in the raw result trace.
+
+## Baselines
+
+1. Single-pass
+2. Single-agent ReAct
+3. Multi-agent without iteration
+4. Multi-agent with explicit verification and selection
+5. VMAR-PS
+
+The interfaces are implemented in the shared experiment runner.
+
+## Experimental Controls
+
+Agent count can be varied independently from refinement rounds.
+
+Supported agent counts for the planned sweep:
+
+1, 2, 4, 8, 16, 24
+
+Supported refinement settings:
+
+0, 1, 2, 3, 4
+
+Compute controls:
+
+- fixed model-call budget
+- fixed wall-clock budget
+- fixed refinement budget
+- unrestricted natural budget
+
+## Metrics
+
+Primary:
+
+- problem solved rate
+
+Secondary:
+
+- first-pass success
+- repair success rate
+- cumulative success by iteration
+- regression rate
+- tests passed
+- runtime
+- model calls
+- tokens when available
+- configured cost when available
+- success per model call
+- diversity measures
+
+## Diversity
+
+Each agent profile records:
+
+- agent ID
+- model
+- provider
+- prompt variant
+- temperature
+- generation limits
+- role
+
+The framework also measures:
+
+- unique models
+- unique providers
+- unique prompt variants
+- first-code agreement
+- pairwise lexical Jaccard similarity
+
+The initial similarity metric is deliberately simple and should not be treated as a semantic diversity score.
+
+## Execution and Security
+
+Docker mode requests:
+
+- disabled networking
+- read-only root filesystem
+- read-only source mount
+- resource limits
+- process limits
+- dropped capabilities
+- no-new-privileges
+- bounded timeout
+
+Subprocess mode is a weaker fallback. It does not provide container-equivalent isolation and does not disable networking.
+
+See docs/security.md.
+
+## Configuration
+
+Researchers change experiment definitions in configs rather than editing Python.
+
+Files:
+
+~~~text
+configs/
+  single_pass.yaml
+  single_agent_react.yaml
+  multi_agent.yaml
+  verified_multi_agent.yaml
+  vmar_ps.yaml
+~~~
+
+API credentials are read from environment variables. Copy .env.example to your local environment and set GEMINI_API_KEY.
+
+The current Google GenAI adapter uses the google-genai Python package and the models.generate_content interface.
+
+## Reproduction
+
+Install:
+
+~~~bash
+python -m pip install -e ".[dev]"
+~~~
+
+Run one condition:
+
+~~~bash
+python scripts/run_experiment.py --config configs/vmar_ps.yaml
+~~~
+
+Evaluate raw results:
+
+~~~bash
+python scripts/evaluate.py --results results
+~~~
+
+Run the planned ablation suite:
+
+~~~bash
+python scripts/run_ablation.py --config configs/vmar_ps.yaml
+~~~
+
+Generate plots from measured results:
+
+~~~bash
+python experiments/plot_results.py --summary results/summary.csv
+~~~
+
+Backward compatibility:
+
+~~~bash
 python react_docker.py
-```
+~~~
 
-The script will:
-- Load agents from `config.json`
-- Read the problem from `problem_example.txt`
-- Each agent attempts to solve the problem using ReAct methodology
-- Solutions are tested in Docker containers (or subprocess if Docker unavailable)
-- Results are saved to `results2.json`
+The compatibility command now routes to the research runner rather than the legacy hard-coded loop.
 
-## 🏗️ Architecture
+## Results
 
-### Components
+Current repository status:
 
-- **`react_docker.py`**: Main script that orchestrates the multi-agent system
-- **`api_client.py`**: Google AI API client for calling Gemini models
-- **`sandbox.py`**: Code execution sandbox (Docker or subprocess)
-- **`config.json`**: Configuration file with API keys and test cases
+- Framework implementation: implemented in the refactor branch.
+- New experiments: Not yet evaluated.
+- Historical results: preserved in results2.json.
+- Historical results are not used as evidence for the new study because the legacy success flag is not a reliable correctness criterion.
 
-### ReAct Loop
+A historical audit found 24 recorded solutions and 24 total iterations. Four historical entries contain SyntaxError text even though their legacy sandbox success field is true. This is precisely the type of measurement issue the new execution schema is designed to avoid.
 
-Each agent follows this iterative process:
+## Reproducibility
 
-1. **Reasoning**: Analyze the problem
-2. **Action**: Generate Python code
-3. **Observation**: Execute code in sandbox and observe results
-4. **Refinement**: If errors occur, refine the solution (up to 3 iterations)
+The framework provides:
 
-### Execution Modes
+- deterministic experiment IDs
+- resolved config snapshots
+- raw JSONL results
+- explicit seed
+- structured attempts
+- configuration-driven benchmarks
+- automated tests
+- GitHub Actions test workflow
 
-- **Docker Mode** (preferred): Executes code in isolated Docker containers with resource limits
-- **Subprocess Mode** (fallback): Executes code in subprocess with memory/time limits
+## Limitations
 
-## 📊 Output
+The first benchmark is intentionally small and is only an executable wiring benchmark. It does not support a scientific conclusion about program synthesis.
 
-Results are saved to `results2.json` with the following structure:
+Visible tests are not hidden tests. Model-call budgets are not equal to FLOPs. Provider API failures can affect experiments. Docker availability can differ between hosts.
 
-```json
-{
-  "total_solutions": 24,
-  "total_agents": 24,
-  "solutions_per_agent": 1,
-  "total_iterations": 48,
-  "avg_iterations_per_solution": 2.0,
-  "solutions": [
-    {
-      "agent_id": "api_1",
-      "solution_number": 1,
-      "iterations": 2,
-      "code": "...",
-      "sandbox_result": {
-        "success": true,
-        "output": "...",
-        "error": "",
-        "execution_time": 0.15
-      }
-    }
-  ]
-}
-```
+## Paper
 
-## 🔒 Security
+See docs/paper.md for the manuscript scaffold.
 
-- Code execution is isolated in Docker containers or subprocess sandboxes
-- Resource limits: 512MB memory, 30 seconds timeout
-- Network access disabled in Docker mode
-- Temporary files are automatically cleaned up
+## Research Positioning
 
-## 🛠️ Configuration
+See docs/research_positioning.md. The project does not claim novelty simply because it integrates known components.
 
-### Adding More Agents
+## License
 
-Edit `config.json` and add more agent configurations:
+The repository's previous license state is preserved unless changed explicitly by the maintainer.
 
-```json
-{
-  "agent_id": "api_N",
-  "type": "google",
-  "key": "YOUR_API_KEY",
-  "model": "gemini-2.5-pro"
-}
-```
+## Citation
 
-### Test Cases
+See CITATION.cff.
 
-Define test cases in `config.json`:
+## Scientific Integrity
 
-```json
-{
-  "test_cases": [
-    {
-      "input": "5\n",
-      "expected_output": "120"
-    }
-  ]
-}
-```
+Never hand-edit result values into a summary.
 
-## 📝 Notes
+Use Not yet evaluated when a measurement has not been run.
 
-- The system automatically detects Docker availability
-- If Docker is not available, it falls back to subprocess execution
-- Each agent can make up to 3 attempts to solve a problem
-- Solutions are validated against test cases
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📄 License
-
-This project is open source and available under the MIT License.
-
-## ⚠️ Disclaimer
-
-This tool executes arbitrary code. Use with caution and only run code from trusted sources. The Docker sandbox provides isolation, but always review code before execution.
-
+Use [EXPERIMENT REQUIRED] in the paper draft when evidence is missing.
