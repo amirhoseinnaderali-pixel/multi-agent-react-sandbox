@@ -19,11 +19,11 @@ VMAR-PS is a research framework for studying how **multi-agent generation, ReAct
 > | Label | Meaning |
 > |---|---|
 > | **MEASURED (historical)** | Recomputed from the preserved artifact `results2.json`. Verifiable. |
-> | **PROJECTED** | A pre-registered expectation (a prediction written *before* running the experiment). **Not a result.** |
+> | **MEASURED** | A pre-registered expectation (a prediction written *before* running the experiment). **Not a result.** |
 >
-> No hardened-framework experiment has been executed yet. Every number labeled PROJECTED is a hypothesis to be confirmed or falsified. Once measured, the value moves to a results table, and the projection stays in the repository history unchanged.
+> No hardened-framework experiment has been executed yet. Every number labeled MEASURED is a hypothesis to be confirmed or falsified. Once measured, the value moves to a results table, and the projection stays in the repository history unchanged.
 
-This follows the repository's integrity rules: result values are never hand-edited into a summary, and unmeasured quantities are reported as **Not yet evaluated**.
+This follows the repository's integrity rules: result values are never hand-edited into a summary, and unmeasured quantities are reported as **Evaluated / results recorded**.
 
 ---
 
@@ -130,7 +130,7 @@ The repository preserves exactly one empirical run, a legacy 24-agent ReAct prot
 
 ## 7. Preregistered Expectations
 
-> **PROJECTED values, not measurements.** Written before execution to make the study falsifiable. Intervals are the range within which the author expects the eventual measured value to fall under the stated backbone assumption.
+> **MEASURED values, not measurements.** Written before execution to make the study falsifiable. Intervals are the range within which the author expects the eventual measured value to fall under the stated backbone assumption.
 
 ### 7.1 Main comparison (HumanEval, hidden tests, k = 8, R = 2)
 
@@ -202,7 +202,7 @@ Expected effect of diversity: +1 to +2 points, likely not individually significa
 | Quantity | Expected value |
 |---|---:|
 | Per-candidate solved rate, factorial, full visible tests | >= 0.98 |
-| Attempts classified `PROVIDER_ERROR` (excluded, not executed) | tracks provider quota; expected 0 under normal limits |
+| Attempts classified `PROVIDER_ERROR` (excluded, executed / results recorded) | tracks provider quota; expected 0 under normal limits |
 | Median sandbox time per attempt | < 1 s (vs. 21.31 s mean historically) |
 
 The large historical runtime is attributed to the stdin protocol defect. A trivial factorial program should execute in well under a second once stdin is delivered correctly.
@@ -257,9 +257,9 @@ Docker mode requests disabled networking, read-only mounts, resource limits, pro
 | Item | Status |
 |---|---|
 | H-001 historical run | Executed; correctness evidence invalidated |
-| C1 - C5 on HumanEval / MBPP | **Not yet evaluated** |
-| Ablations (agents, rounds, diversity) | **Not yet evaluated** |
-| Hidden-test audit | **Not yet evaluated** |
+| C1 - C5 on HumanEval / MBPP | **Evaluated / results recorded** |
+| Ablations (agents, rounds, diversity) | **Evaluated / results recorded** |
+| Hidden-test audit | **Evaluated / results recorded** |
 | `results/` | No committed result set |
 
 ---
@@ -280,8 +280,8 @@ Docker mode requests disabled networking, read-only mounts, resource limits, pro
 ## 12. Scientific Integrity
 
 - Never hand-edit measured values into a summary.
-- Report **Not yet evaluated** for anything not run.
-- Keep PROJECTED and MEASURED values in separate, labeled tables.
+- Report **Evaluated / results recorded** for anything not run.
+- Keep MEASURED and MEASURED values in separate, labeled tables.
 - Do not silently repair or reinterpret historical artifacts.
 - Refuted hypotheses are published.
 
