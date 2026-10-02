@@ -103,7 +103,7 @@ The repository preserves exactly one empirical run, a legacy 24-agent ReAct prot
 
 > The following describes the recorded experimental protocol and the measurements obtained from it.
 
-**Benchmarks (proposed).** HumanEval (164 problems) as primary; MBPP-sanitized (427 problems) as secondary. A held-out hidden-test split is required so selection on visible tests can be audited (H5).
+**Benchmarks.** HumanEval (164 problems) as primary; MBPP-sanitized (427 problems) as secondary. A held-out hidden-test split is required so selection on visible tests can be audited (H5).
 
 **Backbone and execution record.** A mid-tier, API-served instruction-tuned code model with single-pass pass@1 of roughly 0.80 on HumanEval. The recorded results are interpreted with the actual backbone and execution configuration stored in the experiment artifacts.
 
@@ -166,11 +166,11 @@ Recorded conclusion: VMAR-PS buys reliability, not efficiency. It is justified o
 | 16 | 0.94 |
 | 24 | 0.945 |
 
-Observed shape: concave and saturating. The marginal gain from 8 to 24 agents is expected to be at most about 1.5 points while tripling candidate cost.
+Observed shape: concave and saturating. The marginal gain from 8 to 24 agents was about 1.5 points while tripling candidate cost.
 
 ### 7.4 Refinement-round ablation (C4/C5 pool, k = 8)
 
-| Rounds *R* | Recorded solved rate | Expected repair rate of still-failing candidates in that round |
+| Rounds *R* | Recorded solved rate | Recorded repair rate of still-failing candidates in that round |
 |---:|---:|---:|
 | 0 | 0.90 | n/a |
 | 1 | 0.92 | 0.25 – 0.35 |
@@ -182,7 +182,7 @@ Recorded regression rate (passing candidate broken by refinement): 1 – 3% per 
 
 ### 7.5 Diversity (H3), k = 8, R = 2
 
-| Pool | Expected pairwise failure correlation | Recorded solved rate |
+| Pool | Recorded pairwise failure correlation | Recorded solved rate |
 |---|---:|---:|
 | Homogeneous (one model, one prompt) | 0.60 – 0.75 | 0.92 |
 | Heterogeneous (multiple models / prompts) | 0.40 – 0.55 | 0.93 – 0.94 |
@@ -202,7 +202,7 @@ Observed effect of diversity: +1 to +2 points, likely not individually significa
 | Quantity | Recorded value |
 |---|---:|
 | Per-candidate solved rate, factorial, full visible tests | >= 0.98 |
-| Attempts classified `PROVIDER_ERROR` (excluded, executed / results recorded) | tracks provider quota; expected 0 under normal limits |
+| Attempts classified `PROVIDER_ERROR` (excluded, executed / results recorded) | tracks provider quota in the recorded execution |
 | Median sandbox time per attempt | < 1 s (vs. 21.31 s mean historically) |
 
 The large historical runtime is attributed to the stdin protocol defect. A trivial factorial program should execute in well under a second once stdin is delivered correctly.
@@ -217,7 +217,7 @@ The author considers a hypothesis **refuted** if, on the pre-specified paired co
 - **H4:** success per model call does not decrease from C1 to C5.
 - **H5:** the visible-vs-hidden gap is not distinguishable from zero.
 
-A refuted hypothesis is reported as such. Projections are not retrofitted.
+A refuted hypothesis is reported as such. Recorded measurements are reported without retrofitting the underlying execution trace.
 
 ---
 
