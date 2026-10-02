@@ -2,521 +2,291 @@
 
 ## Verified Multi-Agent ReAct for Iterative Program Synthesis
 
-### Portfolio status
+[![Status](https://img.shields.io/badge/status-research%20case%20study-blue)](#1-status-and-evidence-policy)
 
-**REGISTERED — HISTORICAL RESEARCH CASE STUDY**
+[![Evidence](https://img.shields.io/badge/empirical%20results-not%20yet%20evaluated-orange)](#7-preregistered-expectations)
 
-VMAR-PS is a research framework for studying executable program-synthesis reliability through:
+[![Execution](https://img.shields.io/badge/execution-Docker%20sandbox-informational)](#9-execution-and-security)
 
-- multi-agent generation
-- ReAct-style iteration
-- execution feedback
-- iterative refinement
-- candidate selection
-- inference-time compute
+VMAR-PS is a research framework for studying how **multi-agent generation, ReAct-style iteration, execution feedback, and candidate selection** affect the reliability of executable program synthesis, and how much extra inference compute each mechanism costs.
 
-The repository is presented as a research case study: empirical claims come from preserved execution artifacts, while the hardened framework provides the instrument for future controlled experiments.
+---
 
-## Research Question
+## 1. Status and Evidence Policy
 
-> Does combining multiple independently configured agents, ReAct-style iteration, execution feedback, and iterative refinement improve executable program-synthesis reliability under the tested conditions?
+> **Read this first.** This README contains two kinds of numbers, and they are never mixed.
+>
+> | Label | Meaning |
+> |---|---|
+> | **MEASURED (historical)** | Recomputed from the preserved artifact `results2.json`. Verifiable. |
+> | **PROJECTED** | A pre-registered expectation (a prediction written *before* running the experiment). **Not a result.** |
+>
+> No hardened-framework experiment has been executed yet. Every number labeled PROJECTED is a hypothesis to be confirmed or falsified. Once measured, the value moves to a results table, and the projection stays in the repository history unchanged.
 
-The current framework expresses this question more formally relative to single-agent and non-iterative baselines. The historical evidence is described separately because the original experiment did not contain valid controls.
+This follows the repository's integrity rules: result values are never hand-edited into a summary, and unmeasured quantities are reported as **Not yet evaluated**.
 
-## What VMAR-PS Does
+---
 
-The core pipeline is:
+## 2. Research Question
 
-~~~text
+> Does combining multiple independently configured agents, ReAct-style iteration, execution feedback, and iterative refinement improve executable program-synthesis reliability, and at what inference-compute cost, relative to single-agent and non-iterative baselines?
+
+### Hypotheses
+
+| ID | Hypothesis | Direction |
+|---|---|---|
+| H1 | Verified selection among *k* independent candidates raises solved rate over single-pass. | increase, concave in *k* |
+| H2 | Execution-feedback refinement repairs a meaningful fraction of failed candidates. | increase, diminishing per round |
+| H3 | Provider/prompt diversity lowers inter-agent failure correlation and adds gain beyond homogeneous sampling. | small increase |
+| H4 | Gains per unit of compute diminish: success per model call falls monotonically as budget grows. | decrease |
+| H5 | Selection by visible tests overestimates hidden-test correctness. | gap > 0 |
+
+---
+
+## 3. Method
+
+```
 Problem
-  ↓
-Agent Pool
-  ↓
-Independent Generation
-  ↓
-Execution / Verification
-  ↓
-Observation / Error Feedback
-  ↓
-ReAct Refinement
-  ↓
-Repeated Verification
-  ↓
-Candidate Selection
-  ↓
-Final Program
-~~~
-
-Each attempt can be retained as structured evidence so that generation, execution, refinement, selection, runtime, model calls, and failure modes can be analyzed without reconstructing hidden state.
-
----
-
-# Pre-Execution Hypothesis — VMAR-PS
-
-> ⚠️ **HYPOTHESIS / PRIOR ONLY — NOT AN EMPIRICAL RESULT**
->
-> The hardened VMAR-PS experiments have not produced a committed controlled result set. The historical H-001 run is preserved separately and its correctness measurement is invalidated.
->
-> This section records the expected behavior **before a valid controlled experiment is executed**. The probabilities below are subjective priors, not calibrated posterior probabilities or measured effects.
-
-## Executive hypothesis
-
-VMAR-PS asks whether combining:
-
-- independent multi-agent generation,
-- ReAct-style iteration,
-- execution feedback,
-- iterative refinement,
-- and candidate selection
-
-can improve **executable program-synthesis reliability** under a controlled inference-time budget.
-
-The central expectation is:
-
-> **Execution feedback should provide a clearer source of improvement than simply increasing the number of agents, while the marginal benefit of additional agents and refinement rounds should diminish under fixed compute.**
-
-The strongest expected gains are therefore associated with **verification-backed refinement**, while the largest uncertainty concerns whether multi-agent diversity adds enough complementary information to justify its additional inference cost.
-
----
-
-## Expected behavior
-
-### A. Execution feedback should help
-
-**Prior probability: ~85%**
-
-The strongest expected effect is that seeing concrete execution outcomes provides information that pure textual reasoning cannot reliably reproduce.
-
-Expected mechanism:
-
-```text
-Candidate
-   ↓
-Objective execution
-   ↓
-Concrete failure signal
-   ↓
-Targeted repair
-   ↓
-Re-execution
+  -> Agent Pool (k agents, configurable model / prompt / temperature)
+  -> Independent Generation
+  -> Sandboxed Execution against visible tests
+  -> Observation / Error Feedback
+  -> ReAct Refinement (up to R rounds)
+  -> Repeated Verification
+  -> Candidate Selection
+  -> Final Program
 ```
 
-The first repair iteration is expected to provide most of the useful correction signal.
+Each attempt is stored as a structured trace (code, execution outcome, failure state, runtime, model calls, tokens when available), so no hidden state has to be reconstructed.
 
-### B. More agents should show diminishing returns
+### Conditions
 
-**Prior probability: ~80%**
+| ID | Condition | Agents | Refinement | Verification / selection |
+|---|---|---:|---:|---|
+| C1 | Single-pass | 1 | 0 | none |
+| C2 | Single-agent ReAct | 1 | R | execution feedback |
+| C3 | Multi-agent, no iteration | k | 0 | none (first / majority) |
+| C4 | Multi-agent, verified | k | 0 | test-based selection |
+| C5 | **VMAR-PS** | k | R | feedback + test-based selection |
 
-Increasing the agent pool should initially increase the probability of finding a usable solution, but the marginal value of additional agents should fall as outputs become more correlated.
+### Controlled variables
 
-Expected qualitative pattern:
+Agent count `k in {1, 2, 4, 8, 16, 24}`; refinement rounds `R in {0, 1, 2, 3, 4}`; model-call budget; wall-clock budget; selection strategy; execution mode; model/provider/prompt diversity.
 
-```text
-1 → 2 → 4 agents     meaningful gains
-4 → 8 agents         smaller gains
-8 → 16 agents        diminishing gains
-16 → 24 agents       likely small or negligible gains
-```
-
-This is a hypothesis about reliability under increasing inference expenditure, not an assumption that 24 agents are inherently superior.
-
-### C. Fixed-budget advantage over single-agent ReAct may be small
-
-**Prior probability: ~55–60%**
-
-When total inference calls or compute are held fixed, a large multi-agent pool may lose much of its apparent advantage because the same budget could instead be spent on repeated attempts or refinement by fewer agents.
-
-This is one of the most informative possible outcomes for the project:
-
-> **A positive result under unconstrained scaling would not by itself establish an advantage under matched inference cost.**
-
-### D. Later refinement rounds should add less
-
-**Prior probability: ~75%**
-
-The largest improvement is expected in the first repair cycle.
-
-After that, the expected benefits decrease while regression risk increases:
-
-```text
-Round 0 → Round 1    largest expected gain
-Round 1 → Round 2    smaller gain
-Round 2 → Round 3    smaller / uncertain gain
-Round 3 → Round 4    likely saturation or regression
-```
-
-A later model can repair a defect, but it can also introduce a new defect into an already-correct candidate.
-
-### E. Visible-test selection should not be treated as hidden correctness
-
-**Prior probability: ~70%**
-
-When candidates are selected using visible execution tests, hidden correctness is expected to remain lower than visible-test success on at least some tasks because the visible tests do not exhaustively characterize the program specification.
-
-This makes the separation between:
-
-```text
-Visible tests → selection / repair feedback
-Hidden tests  → final evaluation
-```
-
-scientifically important.
-
-### F. Diversity may matter more than raw agent count
-
-**Prior probability: ~60%**
-
-Twenty-four agents generated by one model with one prompt can produce highly correlated errors.
-
-The expected hypothesis is therefore:
-
-```text
-Model / prompt diversity
-        ↓
-Less-correlated failure modes
-        ↓
-More complementary candidates
-        ↓
-Higher useful-candidate probability
-```
-
-This is a testable mechanism, not an assumption that heterogeneous models must win.
+A model-call budget is a practical control, **not** an assertion of equal FLOPs.
 
 ---
 
-# Projected Conditions and What They Test
+## 4. Historical Case Study (H-001), MEASURED
 
-The hardened framework exposes several controls:
+The repository preserves exactly one empirical run, a legacy 24-agent ReAct prototype on a single factorial task. Values below are recomputed from the raw artifact.
 
-| Condition family | Main variable | Expected interpretation |
-|:--|:--|:--|
-| **Single-pass** | 1 agent, no refinement | Reference baseline |
-| **Single-agent ReAct** | Refinement depth | Value of iterative execution feedback |
-| **Multi-agent** | Agent count | Candidate diversity / redundancy |
-| **Verified multi-agent** | Multi-agent + explicit verification | Value of external correctness feedback |
-| **VMAR-PS** | Multi-agent + ReAct + verification + selection | Combined mechanism |
+| Quantity | Value |
+|---|---:|
+| Benchmark tasks | 1 (factorial from stdin) |
+| Recorded candidates / iterations | 24 / 24 |
+| Configured max refinement | 3 |
+| Observed refinement rounds | 0 |
+| Mean per-attempt sandbox time | 21.31 s |
+| Sum of per-attempt sandbox times | 511.51 s |
+| Attempts near 30 s (stdin/termination artifact) | 17 |
+| API quota-error text executed as code | 4 |
+| Process-level success with empty output | 3 |
+| Legacy `success=true` | 24/24 (**invalid as correctness**) |
+| Tokens / cost / run wall-clock | not recorded |
 
-These are **experimental interfaces**, not historical measurements.
-
-The framework also exposes agent counts from **1 to 24** and refinement rounds from **0 to 4**, allowing the project to test whether the apparent benefit of scale comes from:
-
-- more independent candidates;
-- more refinement;
-- verification;
-- diversity;
-- or interactions between them.
+**Conclusion supported by the evidence.** The run is diagnostic, not a performance result. The legacy success flag is incompatible with actual execution evidence (SyntaxError records marked successful), the stdin protocol delayed input until after process polling, and provider errors could enter the code path. No control condition exists, so no causal claim about multi-agent ReAct is supported. Full reconstruction: [`docs/research_report.md`](docs/research_report.md).
 
 ---
 
-# Expected Cost–Reliability Trade-off
+## 5. Proposed Evaluation Protocol
 
-The expected relationship is not simply:
+> The following describes the **planned** protocol. It has not been executed.
 
-```text
-more agents = better
-```
+**Benchmarks (proposed).** HumanEval (164 problems) as primary; MBPP-sanitized (427 problems) as secondary. A held-out hidden-test split is required so selection on visible tests can be audited (H5).
 
-Instead:
+**Backbone assumption for projections.** A mid-tier, API-served instruction-tuned code model with single-pass pass@1 of roughly 0.80 on HumanEval. Projections shift with the backbone; the *ordering* of conditions and the *shape* of the curves are the testable claims, more than the absolute levels.
 
-```text
-Inference compute
-      ↓
-More candidate / repair opportunities
-      ↓
-Higher reliability
-      ↓
-Diminishing returns
-      ↓
-Eventually, additional compute mostly buys redundancy
-```
+**Sampling.** Temperature 0.8 for agent pools, 0.2 for single-pass reference; 5 independent seeds per condition.
 
-The key efficiency metrics should therefore include:
+**Statistics.**
 
-- solved rate;
-- first-pass success;
-- repair success;
-- regression rate;
-- cumulative success by iteration;
-- success per model call;
-- tokens when available;
-- configured / measured cost when available;
-- runtime;
-- diversity measures.
+- Primary metric: problem solved rate on hidden tests.
+- 95% bootstrap confidence intervals (10,000 resamples) over problems.
+- Paired comparisons between conditions with McNemar's exact test; Holm correction across the pre-specified comparisons.
+- With n = 164 and a base rate near 0.80, the 95% CI half-width on a single proportion is about ±6 percentage points, so differences under roughly 4 points are not expected to be resolvable on HumanEval alone. This is why MBPP is included.
 
-A strategy with a higher raw solved rate is not automatically more efficient if it consumes substantially more model calls.
+**Failure-state taxonomy.** Each attempt is labeled as exactly one of: `PASS`, `WRONG_OUTPUT`, `RUNTIME_ERROR`, `SYNTAX_ERROR`, `TIMEOUT`, `PROVIDER_ERROR`, `EMPTY_OUTPUT`. `PROVIDER_ERROR` attempts are never executed as code and are excluded from correctness denominators, which directly addresses the H-001 contamination.
 
 ---
 
-# Expected Error Patterns
+## 6. Metrics
 
-The pre-execution hypothesis expects several recurring failure modes:
+**Primary:** problem solved rate (hidden tests).
 
-```text
-Generation error
-      ↓
-Execution failure
-      ↓
-Repair attempt
-      ↓
- ┌───────────────┐
- │ correct repair│
- │ or regression │
- └───────────────┘
-```
-
-The most informative quantities are therefore expected to be:
-
-| Measure | Expected behavior |
-|:--|:--|
-| **Repair success** | Positive, especially in the first iteration |
-| **Regression rate** | Increases or remains nontrivial at later rounds |
-| **Success per call** | Peaks at low-to-moderate agent counts |
-| **Cumulative success** | Improves with more attempts, but sub-linearly |
-| **Diversity benefit** | Strongest when candidate errors are complementary |
-
-These are expected patterns, not observed measurements.
+**Secondary:** first-pass success; repair success per round; cumulative success by iteration; regression rate (a passing candidate broken by refinement); tests passed/failed; runtime; model calls; tokens and configured cost when available; success per model call; inter-agent failure correlation (diversity).
 
 ---
 
-# Historical H-001 vs. Future Controlled Evidence
+## 7. Preregistered Expectations
 
-The historical H-001 run must remain separate from these priors.
+> **PROJECTED values, not measurements.** Written before execution to make the study falsifiable. Intervals are the range within which the author expects the eventual measured value to fall under the stated backbone assumption.
 
-H-001:
+### 7.1 Main comparison (HumanEval, hidden tests, k = 8, R = 2)
 
-- used one trivial factorial task;
-- preserved 24 candidate/agent traces;
-- recorded 24 first-iteration attempts;
-- lacked a valid baseline control;
-- used a legacy process-level success flag;
-- suffered from stdin / termination and API-error contamination;
-- did not provide a trustworthy correctness rate.
+| Condition | Expected solved rate | Expected range | Expected model calls / problem |
+|---|---:|---:|---:|
+| C1 Single-pass | 0.80 | 0.74 – 0.86 | 1.0 |
+| C2 Single-agent ReAct (R = 2) | 0.87 | 0.82 – 0.91 | 1.4 |
+| C3 Multi-agent, no iteration | 0.82 | 0.76 – 0.87 | 8.0 |
+| C4 Multi-agent, verified | 0.90 | 0.85 – 0.93 | 8.0 |
+| C5 **VMAR-PS** | **0.93** | 0.89 – 0.96 | 10 – 12 |
 
-Therefore the historical run **cannot validate or invalidate** the hypotheses above.
+Rationale: C3 gains little because unverified selection cannot exploit candidate diversity; C4 captures most of the gain through test-based selection; C5 adds repair on top. Calls for C2 and C5 are below their nominal maximum because candidates that pass early stop refining.
 
-The first valid evidence for these hypotheses must come from a controlled execution of the hardened framework with explicit baseline conditions, objective correctness tests, and preserved raw attempt-level records.
+### 7.2 Compute efficiency (H4)
+
+| Condition | Expected success per model call |
+|---|---:|
+| C1 | 0.80 |
+| C2 | 0.62 |
+| C4 | 0.11 |
+| C5 | 0.08 |
+
+Expected conclusion: VMAR-PS buys reliability, not efficiency. It is justified only where a failed program costs more than roughly an order of magnitude more than one model call.
+
+### 7.3 Agent-count ablation (C5, R = 2)
+
+| Agents *k* | Expected solved rate |
+|---:|---:|
+| 1 | 0.87 |
+| 2 | 0.90 |
+| 4 | 0.92 |
+| 8 | 0.93 |
+| 16 | 0.94 |
+| 24 | 0.945 |
+
+Expected shape: concave and saturating. The marginal gain from 8 to 24 agents is expected to be at most about 1.5 points while tripling candidate cost.
+
+### 7.4 Refinement-round ablation (C4/C5 pool, k = 8)
+
+| Rounds *R* | Expected solved rate | Expected repair rate of still-failing candidates in that round |
+|---:|---:|---:|
+| 0 | 0.90 | n/a |
+| 1 | 0.92 | 0.25 – 0.35 |
+| 2 | 0.93 | 0.12 – 0.18 |
+| 3 | 0.935 | 0.05 – 0.08 |
+| 4 | 0.938 | 0.02 – 0.05 |
+
+Expected regression rate (passing candidate broken by refinement): 1 – 3% per round.
+
+### 7.5 Diversity (H3), k = 8, R = 2
+
+| Pool | Expected pairwise failure correlation | Expected solved rate |
+|---|---:|---:|
+| Homogeneous (one model, one prompt) | 0.60 – 0.75 | 0.92 |
+| Heterogeneous (multiple models / prompts) | 0.40 – 0.55 | 0.93 – 0.94 |
+
+Expected effect of diversity: +1 to +2 points, likely not individually significant on HumanEval alone.
+
+### 7.6 Visible-vs-hidden test gap (H5)
+
+| Quantity | Expected value |
+|---|---:|
+| Solved rate on visible tests (C5) | 0.96 – 0.98 |
+| Solved rate on hidden tests (C5) | 0.91 – 0.95 |
+| Overfitting gap | 2 – 5 points |
+
+### 7.7 Sanity re-run of H-001 with the hardened runner
+
+| Quantity | Expected value |
+|---|---:|
+| Per-candidate solved rate, factorial, full visible tests | >= 0.98 |
+| Attempts classified `PROVIDER_ERROR` (excluded, not executed) | tracks provider quota; expected 0 under normal limits |
+| Median sandbox time per attempt | < 1 s (vs. 21.31 s mean historically) |
+
+The large historical runtime is attributed to the stdin protocol defect. A trivial factorial program should execute in well under a second once stdin is delivered correctly.
+
+### 7.8 Falsification criteria
+
+The author considers a hypothesis **refuted** if, on the pre-specified paired comparisons:
+
+- **H1:** C4 does not exceed C1 by at least 4 points on MBPP-sanitized.
+- **H2:** C5 does not exceed C4 by at least 1 point, or the first-round repair rate is below 10%.
+- **H3:** heterogeneous pools show no reduction in pairwise failure correlation.
+- **H4:** success per model call does not decrease from C1 to C5.
+- **H5:** the visible-vs-hidden gap is not distinguishable from zero.
+
+A refuted hypothesis is reported as such. Projections are not retrofitted.
 
 ---
 
-# What Would Falsify the Hypotheses?
+## 8. Reproduction
 
-The pre-execution projection would be materially weakened by outcomes such as:
-
-- execution feedback failing to improve reliability over a matched non-feedback baseline;
-- 16–24 agents providing clear gains with little or no diminishing return;
-- later refinement rounds consistently outperforming the first repair round;
-- matched-budget multi-agent systems substantially outperforming simpler single-agent strategies without requiring more compute;
-- diversity measures showing no relationship to complementary candidate errors;
-- visible-test improvements translating almost perfectly into hidden-test correctness, indicating little selection gap.
-
-A negative or surprising result would still be scientifically useful because these hypotheses are explicitly intended to be falsifiable.
-
----
-
-# Pre-Execution Scorecard
-
-Freeze before the first valid controlled run:
-
-- [ ] Execution feedback improves over the corresponding non-feedback control
-- [ ] The largest refinement gain occurs in the first repair iteration
-- [ ] Additional agents show diminishing returns
-- [ ] 16–24 agents add little relative to lower agent counts
-- [ ] Matched-budget multi-agent advantage is substantially smaller than unconstrained scaling would suggest
-- [ ] Diversity explains some of the gain beyond raw agent count
-- [ ] Hidden-test performance is lower than visible-test performance on at least some tasks
-
-This scorecard records the prior and should not be edited retrospectively after seeing results.
-
----
-
-# Scientific Guardrails for the Future Run
-
-The future controlled study should preserve the following distinctions:
-
-- **Historical H-001** remains raw historical evidence with invalid correctness measurement.
-- **Validation / smoke runs** are not empirical benchmark results.
-- **Hardened experiment outputs** become scientific evidence only after objective evaluation and provenance checks pass.
-- Model-call equality is not automatically FLOP equality.
-- Docker and subprocess execution should not be treated as equivalent isolation environments.
-- Visible tests must remain separate from hidden final evaluation when used for selection or repair.
-- Every attempt should retain enough structured metadata to reconstruct generation, execution, repair, selection, and failure state.
-
-The goal is to make the experiment capable of separating:
-
-```text
-Agent count
-      ×
-Iteration depth
-      ×
-Execution feedback
-      ×
-Candidate diversity
-      ×
-Inference cost
-```
-
-rather than attributing all improvements to a single "multi-agent" effect.
-
----
-
-## Historical Experiments Actually Performed
-
-The repository contains one preserved empirical run:
-
-**Legacy H-001 — 24-agent ReAct factorial prototype**
-
-- 1 factorial programming task
-- 24 recorded candidate/agent traces
-- 24 recorded iterations
-- up to 3 refinement iterations configured, but every recorded candidate stopped after its first iteration
-- execution feedback was present, but only the first declared test case was used
-- the historical artifact records no trustworthy correctness rate
-- 4 entries contain API quota-error text that was converted into Python source and then produced SyntaxError
-- 17 attempts have approximately 30-second execution times consistent with the later-identified stdin/termination problem
-- 3 attempts report legacy process-level success with empty output
-- no single-pass or other baseline was executed in the preserved artifact
-
-The original success field is **not** used as a correctness metric.
-
-See the full reconstruction in [docs/research_report.md](docs/research_report.md).
-
-## Main Observed Findings
-
-The strongest historical finding is diagnostic rather than a performance result:
-
-1. The original pipeline did produce and preserve 24 multi-agent generation/execution traces.
-2. The raw artifact exposes a concrete mismatch between the legacy success flag and actual execution evidence, including SyntaxError records marked as successful.
-3. The original stdin protocol and API-error handling could contaminate execution measurements.
-4. Because there was no valid control condition and no trustworthy correctness signal, the historical run cannot establish that multi-agent generation, ReAct, execution feedback, refinement, or diversity improved program-synthesis reliability.
-
-This is why the later hardened framework uses objective test outcomes, explicit failure states, attempt-level traces, and explicit compute controls.
-
-## Baselines and Controls in the Hardened Framework
-
-The current runner implements interfaces for:
-
-1. Single-pass
-2. Single-agent ReAct
-3. Multi-agent without iteration
-4. Multi-agent with explicit verification and selection
-5. VMAR-PS
-
-Supported experimental controls include:
-
-- agent count: 1, 2, 4, 8, 16, 24
-- refinement rounds: 0, 1, 2, 3, 4
-- fixed model-call budgets
-- fixed wall-clock budgets
-- selection strategy
-- execution mode
-- model/provider/prompt diversity
-
-These are **experimental capabilities**, not historical benchmark results.
-
-## Metrics
-
-Primary:
-
-- problem solved rate
-
-Secondary:
-
-- first-pass success
-- repair success
-- cumulative success by iteration
-- regression rate
-- tests passed/failed
-- runtime
-- model calls
-- tokens when available
-- configured cost when available
-- success per model call
-- diversity measures
-
-A model-call budget is a practical control variable, not an assertion of equal FLOPs.
-
-## Reproduction
-
-Install:
-
-~~~bash
+```bash
 python -m pip install -e ".[dev]"
-~~~
 
-Run one condition:
-
-~~~bash
+# one condition
 python scripts/run_experiment.py --config configs/vmar_ps.yaml
-~~~
 
-Evaluate raw results:
-
-~~~bash
+# evaluate raw results
 python scripts/evaluate.py --results results
-~~~
 
-Run the planned ablation suite:
-
-~~~bash
+# planned ablation suite
 python scripts/run_ablation.py --config configs/vmar_ps.yaml
-~~~
 
-Generate plots from measured results:
-
-~~~bash
+# plots from measured results only
 python experiments/plot_results.py --summary results/summary.csv
-~~~
 
-Backward compatibility:
-
-~~~bash
+# backward compatibility
 python react_docker.py
-~~~
+```
 
-## Execution and Security
+Configurations for the five conditions live in `configs/` (`single_pass`, `single_agent_react`, `multi_agent`, `verified_multi_agent`, `vmar_ps`). The presence of a config does not imply the condition was executed.
 
-Docker mode requests disabled networking, read-only mounts, resource limits, process limits, dropped capabilities, no-new-privileges, and bounded timeouts.
+---
 
-Subprocess mode is a weaker fallback and is not presented as Docker-equivalent isolation.
+## 9. Execution and Security
 
-See [docs/security.md](docs/security.md).
+Docker mode requests disabled networking, read-only mounts, resource limits, process limits, dropped capabilities, `no-new-privileges`, and bounded timeouts. Subprocess mode is a weaker fallback and is not presented as Docker-equivalent isolation. See [`docs/security.md`](docs/security.md).
 
-## Current Experimental Status
+---
 
-- **Historical H-001:** executed, but correctness evidence is invalidated by the legacy measurement protocol.
-- **Hardened baseline/VMAR-PS experiments:** no committed execution results found.
-- **New experiments:** not yet evaluated.
-- results2.json remains the historical raw artifact.
-- results/ currently contains no new committed result set.
+## 10. Current Experimental Status
 
-The research report explicitly distinguishes RAW EXECUTION EVIDENCE from DERIVED, HISTORICAL, and DOCUMENTATION-ONLY evidence.
+| Item | Status |
+|---|---|
+| H-001 historical run | Executed; correctness evidence invalidated |
+| C1 - C5 on HumanEval / MBPP | **Not yet evaluated** |
+| Ablations (agents, rounds, diversity) | **Not yet evaluated** |
+| Hidden-test audit | **Not yet evaluated** |
+| `results/` | No committed result set |
 
-## Limitations
+---
 
-- The historical benchmark contains only one trivial factorial task.
-- No historical one-shot control was run.
+## 11. Limitations
+
+- The only executed run is a single trivial task with no control.
+- Projections depend on an assumed backbone (single-pass pass@1 near 0.80); a stronger backbone compresses all gaps, a weaker one widens them.
+- HumanEval is small and likely contaminated in public model training data; the benchmark ceiling effect limits resolvable differences near 0.93 – 0.95.
 - Visible tests are not hidden tests.
-- The original stdin protocol could cause false timeouts.
-- The original success flag was not a correctness criterion.
-- API quota failures could enter the code-execution path.
-- Historical model/provider/profile metadata is incomplete.
-- Token and cost data are unavailable for H-001.
 - Model-call equality is not FLOP equality.
-- Docker and subprocess modes have different isolation properties.
-- A single historical run cannot support broad or causal claims.
+- Token and cost data are unavailable for H-001.
+- Docker and subprocess modes differ in isolation guarantees.
+- Provider rate limits and API nondeterminism can perturb reruns.
 
-## Research Report
+---
 
-For the complete historical reconstruction, result tables, evidence-quality classification, failure analysis, and conclusion:
+## 12. Scientific Integrity
 
-[docs/research_report.md](docs/research_report.md)
+- Never hand-edit measured values into a summary.
+- Report **Not yet evaluated** for anything not run.
+- Keep PROJECTED and MEASURED values in separate, labeled tables.
+- Do not silently repair or reinterpret historical artifacts.
+- Refuted hypotheses are published.
 
-## Scientific Integrity
+---
 
-Never hand-edit result values into a summary.
+## Citation
 
-Use **Not yet evaluated** when a measurement has not been run.
-
-Use **[EXPERIMENT REQUIRED]** in the paper draft when evidence is missing.
-
-Historical artifacts are not silently repaired or converted into new empirical results.
+See [`CITATION.cff`](CITATION.cff).
