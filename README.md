@@ -2,6 +2,10 @@
 
 ## Verified Multi-Agent ReAct for Iterative Program Synthesis
 
+### Portfolio status
+
+**REGISTERED — HISTORICAL RESEARCH CASE STUDY**
+
 VMAR-PS is a research framework for studying executable program-synthesis reliability through:
 
 - multi-agent generation
