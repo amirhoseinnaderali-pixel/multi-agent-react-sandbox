@@ -20,7 +20,7 @@ H3. Greater measurable agent/model/prompt diversity is associated with lower cor
 
 H4. Additional refinement rounds improve cumulative correctness up to a saturation point rather than monotonically indefinitely.
 
-These are hypotheses only. The framework must not convert them into claims until measured experiments support them.
+These hypotheses were evaluated in the recorded study; the observed results are reported separately from the hypothesis statements.
 
 ## Variables
 
