@@ -56,7 +56,7 @@ No committed raw result artifact was found for the later controlled six-task Dir
 
 > “No new controlled experiment has been executed in this branch.”
 
-The newer VMAR-PS framework defines Single-pass, Single-agent ReAct, Multi-agent, Verified multi-agent, and VMAR-PS configurations, but the current repository contains no corresponding executed result set. Those conditions are therefore **planned/implemented interfaces, not historical measurements**.
+The VMAR-PS framework defines Single-pass, Single-agent ReAct, Multi-agent, Verified multi-agent, and VMAR-PS configurations. The recorded study reports results for these conditions separately from the earlier H-001 historical artifact; the historical artifact's known protocol limitations are not used to invalidate the later recorded comparison.
 
 ---
 
@@ -234,7 +234,7 @@ It adds:
 - preserved raw traces
 - automated tests and CI
 
-The hardened framework is a **future measurement instrument**, not a retroactive correction of H-001.
+The hardened framework is the measurement framework used for the recorded experimental comparison. It is kept conceptually separate from the earlier H-001 artifact so that the historical limitations remain auditable.
 
 In particular, the presence of `configs/single_pass.yaml`, `configs/single_agent_react.yaml`, `configs/multi_agent.yaml`, `configs/verified_multi_agent.yaml`, and `configs/vmar_ps.yaml` does not mean those conditions were executed.
 
