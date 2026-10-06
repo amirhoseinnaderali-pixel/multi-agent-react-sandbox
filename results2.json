@@ -1,0 +1,585 @@
+{
+  "total_solutions": 24,
+  "total_agents": 24,
+  "solutions_per_agent": 2,
+  "total_iterations": 24,
+  "avg_iterations_per_solution": 1.0,
+  "solutions": [
+    {
+      "agent_id": "api_1",
+      "solution_number": 1,
+      "iterations": 1,
+      "history": [
+        {
+          "iteration": 1,
+          "code": "def factorial(n):\n  \"\"\"\n  Calculates the factorial of a non-negative integer n.\n\n  Args:\n    n: A non-negative integer.\n\n  Returns:\n    The factorial of n.\n  \"\"\"\n  # Handle edge case: factorial(0) = 1\n  if n == 0:\n    return 1\n  \n  # Initialize result for multiplication\n  result = 1\n  \n  # Loop from 1 to n (inclusive) and multiply\n  for i in range(1, n + 1):\n    result *= i\n    \n  return result\n\n# Main part of the program to handle input and output\nif __name__ == \"__main__\":\n  # Read a number from standard input\n  try:\n    num_input = int(input())\n    \n    # Calculate the factorial using the function\n    result = factorial(num_input)\n    \n    # Print the result to standard output\n    print(result)\n  except (ValueError, EOFError):\n    # Handle cases where input is not a valid integer or input is empty\n    print(\"Please provide a valid non-negative integer as input.\")",
+          "sandbox_result": {
+            "success": true,
+            "output": "",
+            "error": "",
+            "execution_time": 30.1
+          }
+        }
+      ],
+      "code": "def factorial(n):\n  \"\"\"\n  Calculates the factorial of a non-negative integer n.\n\n  Args:\n    n: A non-negative integer.\n\n  Returns:\n    The factorial of n.\n  \"\"\"\n  # Handle edge case: factorial(0) = 1\n  if n == 0:\n    return 1\n  \n  # Initialize result for multiplication\n  result = 1\n  \n  # Loop from 1 to n (inclusive) and multiply\n  for i in range(1, n + 1):\n    result *= i\n    \n  return result\n\n# Main part of the program to handle input and output\nif __name__ == \"__main__\":\n  # Read a number from standard input\n  try:\n    num_input = int(input())\n    \n    # Calculate the factorial using the function\n    result = factorial(num_input)\n    \n    # Print the result to standard output\n    print(result)\n  except (ValueError, EOFError):\n    # Handle cases where input is not a valid integer or input is empty\n    print(\"Please provide a valid non-negative integer as input.\")",
+      "sandbox_result": {
+        "success": true,
+        "output": "",
+        "error": "",
+        "execution_time": 30.1
+      }
+    },
+    {
+      "agent_id": "api_2",
+      "solution_number": 1,
+      "iterations": 1,
+      "history": [
+        {
+          "iteration": 1,
+          "code": "import sys\n\ndef factorial(n: int) -> int:\n    \"\"\"\n    Calculates the factorial of a non-negative integer n.\n\n    Args:\n        n: A non-negative integer.\n\n    Returns:\n        The factorial of n.\n    \"\"\"\n    if n == 0:\n        return 1\n    elif n < 0:\n        # As per problem, 'non-negative integer', so this case might not strictly be needed\n        # but it's good practice for a robust function.\n        raise ValueError(\"Factorial is not defined for negative numbers.\")\n    else:\n        result = 1\n        for i in range(1, n + 1):\n            result *= i\n        return result\n\nif __name__ == \"__main__\":\n    try:\n        # Read input from stdin\n        input_str = sys.stdin.readline().strip()\n        n = int(input_str)\n\n        # Calculate factorial\n        result = factorial(n)\n\n        # Print the result to stdout\n        print(result)\n    except ValueError as e:\n        print(f\"Error: Invalid input. Please provide a non-negative integer. {e}\", file=sys.stderr)\n    except Exception as e:\n        print(f\"An unexpected error occurred: {e}\", file=sys.stderr)",
+          "sandbox_result": {
+            "success": true,
+            "output": "",
+            "error": "",
+            "execution_time": 30.06
+          }
+        }
+      ],
+      "code": "import sys\n\ndef factorial(n: int) -> int:\n    \"\"\"\n    Calculates the factorial of a non-negative integer n.\n\n    Args:\n        n: A non-negative integer.\n\n    Returns:\n        The factorial of n.\n    \"\"\"\n    if n == 0:\n        return 1\n    elif n < 0:\n        # As per problem, 'non-negative integer', so this case might not strictly be needed\n        # but it's good practice for a robust function.\n        raise ValueError(\"Factorial is not defined for negative numbers.\")\n    else:\n        result = 1\n        for i in range(1, n + 1):\n            result *= i\n        return result\n\nif __name__ == \"__main__\":\n    try:\n        # Read input from stdin\n        input_str = sys.stdin.readline().strip()\n        n = int(input_str)\n\n        # Calculate factorial\n        result = factorial(n)\n\n        # Print the result to stdout\n        print(result)\n    except ValueError as e:\n        print(f\"Error: Invalid input. Please provide a non-negative integer. {e}\", file=sys.stderr)\n    except Exception as e:\n        print(f\"An unexpected error occurred: {e}\", file=sys.stderr)",
+      "sandbox_result": {
+        "success": true,
+        "output": "",
+        "error": "",
+        "execution_time": 30.06
+      }
+    },
+    {
+      "agent_id": "api_3",
+      "solution_number": 1,
+      "iterations": 1,
+      "history": [
+        {
+          "iteration": 1,
+          "code": "def factorial(n):\n    \"\"\"\n    Calculate factorial of a number\n\n    Args:\n        n (int): A non-negative integer\n\n    Returns:\n        int: The factorial of n\n    \"\"\"\n    if n == 0:\n        return 1\n    else:\n        result = 1\n        for i in range(1, n + 1):\n            result *= i\n        return result\n\nif __name__ == \"__main__\":\n    n = int(input())\n    print(factorial(n))",
+          "sandbox_result": {
+            "success": true,
+            "output": "",
+            "error": "",
+            "execution_time": 30.08
+          }
+        }
+      ],
+      "code": "def factorial(n):\n    \"\"\"\n    Calculate factorial of a number\n\n    Args:\n        n (int): A non-negative integer\n\n    Returns:\n        int: The factorial of n\n    \"\"\"\n    if n == 0:\n        return 1\n    else:\n        result = 1\n        for i in range(1, n + 1):\n            result *= i\n        return result\n\nif __name__ == \"__main__\":\n    n = int(input())\n    print(factorial(n))",
+      "sandbox_result": {
+        "success": true,
+        "output": "",
+        "error": "",
+        "execution_time": 30.08
+      }
+    },
+    {
+      "agent_id": "api_4",
+      "solution_number": 1,
+      "iterations": 1,
+      "history": [
+        {
+          "iteration": 1,
+          "code": "# Error: 429 RESOURCE_EXHAUSTED. You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50\nPlease retry in 19.677063942s.",
+          "sandbox_result": {
+            "success": true,
+            "output": "",
+            "error": "  File \"/sandbox/solution.py\", line 2\n    * Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50\n            ^\nSyntaxError: invalid syntax\n",
+            "execution_time": 0.05
+          }
+        }
+      ],
+      "code": "# Error: 429 RESOURCE_EXHAUSTED. You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50\nPlease retry in 19.677063942s.",
+      "sandbox_result": {
+        "success": true,
+        "output": "",
+        "error": "  File \"/sandbox/solution.py\", line 2\n    * Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50\n            ^\nSyntaxError: invalid syntax\n",
+        "execution_time": 0.05
+      }
+    },
+    {
+      "agent_id": "api_5",
+      "solution_number": 1,
+      "iterations": 1,
+      "history": [
+        {
+          "iteration": 1,
+          "code": "def factorial(n):\n    \"\"\"\n    Calculates the factorial of a non-negative integer n.\n\n    Args:\n        n (int): A non-negative integer.\n\n    Returns:\n        int: The factorial of n.\n    \"\"\"\n    # Requirement 4: Handle edge case factorial(0) = 1\n    if n == 0:\n        return 1\n    \n    # Requirement 3: Calculate factorial for n > 0\n    # n! = n * (n-1) * ... * 1\n    result = 1\n    for i in range(1, n + 1):\n        result *= i\n    return result\n\n# Requirement 5: The program should read input from stdin and print the result\nif __name__ == \"__main__\":\n    try:\n        input_str = input()\n        num = int(input_str)\n        \n        # Ensure n is non-negative as per problem description\n        if num < 0:\n            print(\"Input must be a non-negative integer.\", file=sys.stderr)\n            sys.exit(1)\n\n        result = factorial(num)\n        print(result)\n    except ValueError:\n        print(\"Invalid input. Please enter an integer.\", file=sys.stderr)\n        import sys\n        sys.exit(1)\n    except EOFError:\n        print(\"No input received.\", file=sys.stderr)\n        import sys\n        sys.exit(1)",
+          "sandbox_result": {
+            "success": true,
+            "output": "",
+            "error": "",
+            "execution_time": 30.05
+          }
+        }
+      ],
+      "code": "def factorial(n):\n    \"\"\"\n    Calculates the factorial of a non-negative integer n.\n\n    Args:\n        n (int): A non-negative integer.\n\n    Returns:\n        int: The factorial of n.\n    \"\"\"\n    # Requirement 4: Handle edge case factorial(0) = 1\n    if n == 0:\n        return 1\n    \n    # Requirement 3: Calculate factorial for n > 0\n    # n! = n * (n-1) * ... * 1\n    result = 1\n    for i in range(1, n + 1):\n        result *= i\n    return result\n\n# Requirement 5: The program should read input from stdin and print the result\nif __name__ == \"__main__\":\n    try:\n        input_str = input()\n        num = int(input_str)\n        \n        # Ensure n is non-negative as per problem description\n        if num < 0:\n            print(\"Input must be a non-negative integer.\", file=sys.stderr)\n            sys.exit(1)\n\n        result = factorial(num)\n        print(result)\n    except ValueError:\n        print(\"Invalid input. Please enter an integer.\", file=sys.stderr)\n        import sys\n        sys.exit(1)\n    except EOFError:\n        print(\"No input received.\", file=sys.stderr)\n        import sys\n        sys.exit(1)",
+      "sandbox_result": {
+        "success": true,
+        "output": "",
+        "error": "",
+        "execution_time": 30.05
+      }
+    },
+    {
+      "agent_id": "api_6",
+      "solution_number": 1,
+      "iterations": 1,
+      "history": [
+        {
+          "iteration": 1,
+          "code": "def factorial(n):\n  \"\"\"\n  Calculate factorial of a number\n\n  Args:\n    n: An integer\n\n  Returns:\n    The factorial of n\n  \"\"\"\n  if n == 0:\n    return 1\n  else:\n    result = 1\n    for i in range(1, n + 1):\n      result *= i\n    return result\n\nif __name__ == \"__main__\":\n  n = int(input())\n  print(factorial(n))",
+          "sandbox_result": {
+            "success": true,
+            "output": "",
+            "error": "",
+            "execution_time": 30.04
+          }
+        }
+      ],
+      "code": "def factorial(n):\n  \"\"\"\n  Calculate factorial of a number\n\n  Args:\n    n: An integer\n\n  Returns:\n    The factorial of n\n  \"\"\"\n  if n == 0:\n    return 1\n  else:\n    result = 1\n    for i in range(1, n + 1):\n      result *= i\n    return result\n\nif __name__ == \"__main__\":\n  n = int(input())\n  print(factorial(n))",
+      "sandbox_result": {
+        "success": true,
+        "output": "",
+        "error": "",
+        "execution_time": 30.04
+      }
+    },
+    {
+      "agent_id": "api_7",
+      "solution_number": 1,
+      "iterations": 1,
+      "history": [
+        {
+          "iteration": 1,
+          "code": "import sys\n\ndef factorial(n: int) -> int:\n    \"\"\"\n    Calculates the factorial of a non-negative integer n.\n\n    Args:\n        n: A non-negative integer.\n\n    Returns:\n        The factorial of n.\n    \"\"\"\n    # Requirement 4: Handle edge case factorial(0) = 1\n    if n == 0:\n        return 1\n    \n    # Requirement 3: Calculate the factorial for n > 0\n    result = 1\n    # Iterate from 1 up to n (inclusive)\n    for i in range(1, n + 1):\n        result *= i\n    return result\n\nif __name__ == \"__main__\":\n    # Requirement 5: Read input from stdin\n    try:\n        num_str = sys.stdin.readline().strip()\n        n = int(num_str)\n        \n        # Input validation for non-negative requirement (though problem implies valid input)\n        if n < 0:\n            # If the problem strictly guarantees non-negative, this block can be omitted.\n            # But it's good practice for robust code.\n            # For this problem, sticking to \"non-negative integer n\" means assuming valid input.\n            pass # As per problem statement, assume n is non-negative.\n        \n        # Calculate factorial using the defined function\n        result = factorial(n)\n        \n        # Requirement 5: Print the result to stdout\n        print(result)\n        \n    except ValueError:\n        # Handle cases where input is not a valid integer.\n        # The problem statement implies valid integer input, so this is extra robust code.\n        # For submission, assuming valid input as per requirements.\n        pass \n    except Exception as e:\n        # General error handling, if needed.\n        pass",
+          "sandbox_result": {
+            "success": true,
+            "output": "",
+            "error": "",
+            "execution_time": 30.04
+          }
+        }
+      ],
+      "code": "import sys\n\ndef factorial(n: int) -> int:\n    \"\"\"\n    Calculates the factorial of a non-negative integer n.\n\n    Args:\n        n: A non-negative integer.\n\n    Returns:\n        The factorial of n.\n    \"\"\"\n    # Requirement 4: Handle edge case factorial(0) = 1\n    if n == 0:\n        return 1\n    \n    # Requirement 3: Calculate the factorial for n > 0\n    result = 1\n    # Iterate from 1 up to n (inclusive)\n    for i in range(1, n + 1):\n        result *= i\n    return result\n\nif __name__ == \"__main__\":\n    # Requirement 5: Read input from stdin\n    try:\n        num_str = sys.stdin.readline().strip()\n        n = int(num_str)\n        \n        # Input validation for non-negative requirement (though problem implies valid input)\n        if n < 0:\n            # If the problem strictly guarantees non-negative, this block can be omitted.\n            # But it's good practice for robust code.\n            # For this problem, sticking to \"non-negative integer n\" means assuming valid input.\n            pass # As per problem statement, assume n is non-negative.\n        \n        # Calculate factorial using the defined function\n        result = factorial(n)\n        \n        # Requirement 5: Print the result to stdout\n        print(result)\n        \n    except ValueError:\n        # Handle cases where input is not a valid integer.\n        # The problem statement implies valid integer input, so this is extra robust code.\n        # For submission, assuming valid input as per requirements.\n        pass \n    except Exception as e:\n        # General error handling, if needed.\n        pass",
+      "sandbox_result": {
+        "success": true,
+        "output": "",
+        "error": "",
+        "execution_time": 30.04
+      }
+    },
+    {
+      "agent_id": "api_8",
+      "solution_number": 1,
+      "iterations": 1,
+      "history": [
+        {
+          "iteration": 1,
+          "code": "import sys\n\ndef factorial(n: int) -> int:\n    \"\"\"Calculates the factorial of a non-negative integer n.\"\"\"\n    # Handle the requirement for non-negative integers only.\n    if n < 0:\n        # Assuming input will be non-negative based on problem description,\n        # but robust handling might raise an error. For this specific requirement, \n        # we focus on non-negative inputs.\n        return 0 # Or raise ValueError, but standard factorial is undefined for negative integers.\n\n    # Base case: factorial(0) = 1\n    if n == 0:\n        return 1\n    \n    # Calculate factorial iteratively\n    result = 1\n    for i in range(1, n + 1):\n        result *= i\n    \n    return result\n\n# Main execution block to read input and print output\nif __name__ == \"__main__\":\n    try:\n        # Read input from stdin\n        # Using sys.stdin.read().strip() to handle potential multiline inputs or single line reading\n        input_data = sys.stdin.read().strip()\n        \n        if not input_data:\n            # Handle empty input gracefully if possible\n            sys.exit(0)\n\n        # Convert the input to an integer\n        N = int(input_data)\n        \n        # Calculate and print the result\n        result = factorial(N)\n        print(result)\n        \n    except EOFError:\n        # Handle case where input stream closes immediately\n        pass\n    except ValueError:\n        # Handle case where input is not a valid integer\n        # print(\"Invalid input: Please enter a non-negative integer.\")\n        pass",
+          "sandbox_result": {
+            "success": true,
+            "output": "",
+            "error": "",
+            "execution_time": 30.06
+          }
+        }
+      ],
+      "code": "import sys\n\ndef factorial(n: int) -> int:\n    \"\"\"Calculates the factorial of a non-negative integer n.\"\"\"\n    # Handle the requirement for non-negative integers only.\n    if n < 0:\n        # Assuming input will be non-negative based on problem description,\n        # but robust handling might raise an error. For this specific requirement, \n        # we focus on non-negative inputs.\n        return 0 # Or raise ValueError, but standard factorial is undefined for negative integers.\n\n    # Base case: factorial(0) = 1\n    if n == 0:\n        return 1\n    \n    # Calculate factorial iteratively\n    result = 1\n    for i in range(1, n + 1):\n        result *= i\n    \n    return result\n\n# Main execution block to read input and print output\nif __name__ == \"__main__\":\n    try:\n        # Read input from stdin\n        # Using sys.stdin.read().strip() to handle potential multiline inputs or single line reading\n        input_data = sys.stdin.read().strip()\n        \n        if not input_data:\n            # Handle empty input gracefully if possible\n            sys.exit(0)\n\n        # Convert the input to an integer\n        N = int(input_data)\n        \n        # Calculate and print the result\n        result = factorial(N)\n        print(result)\n        \n    except EOFError:\n        # Handle case where input stream closes immediately\n        pass\n    except ValueError:\n        # Handle case where input is not a valid integer\n        # print(\"Invalid input: Please enter a non-negative integer.\")\n        pass",
+      "sandbox_result": {
+        "success": true,
+        "output": "",
+        "error": "",
+        "execution_time": 30.06
+      }
+    },
+    {
+      "agent_id": "api_9",
+      "solution_number": 1,
+      "iterations": 1,
+      "history": [
+        {
+          "iteration": 1,
+          "code": "# Error: 429 RESOURCE_EXHAUSTED. You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50\nPlease retry in 46.732157362s.",
+          "sandbox_result": {
+            "success": true,
+            "output": "",
+            "error": "  File \"/sandbox/solution.py\", line 2\n    * Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50\n            ^\nSyntaxError: invalid syntax\n",
+            "execution_time": 0.04
+          }
+        }
+      ],
+      "code": "# Error: 429 RESOURCE_EXHAUSTED. You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50\nPlease retry in 46.732157362s.",
+      "sandbox_result": {
+        "success": true,
+        "output": "",
+        "error": "  File \"/sandbox/solution.py\", line 2\n    * Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50\n            ^\nSyntaxError: invalid syntax\n",
+        "execution_time": 0.04
+      }
+    },
+    {
+      "agent_id": "api_10",
+      "solution_number": 1,
+      "iterations": 1,
+      "history": [
+        {
+          "iteration": 1,
+          "code": "# Error: 503 UNAVAILABLE. The model is overloaded. Please try again later.",
+          "sandbox_result": {
+            "success": true,
+            "output": "",
+            "error": "",
+            "execution_time": 0.05
+          }
+        }
+      ],
+      "code": "# Error: 503 UNAVAILABLE. The model is overloaded. Please try again later.",
+      "sandbox_result": {
+        "success": true,
+        "output": "",
+        "error": "",
+        "execution_time": 0.05
+      }
+    },
+    {
+      "agent_id": "api_11",
+      "solution_number": 1,
+      "iterations": 1,
+      "history": [
+        {
+          "iteration": 1,
+          "code": "def factorial(n: int) -> int:\n    \"\"\"\n    Calculates the factorial of a non-negative integer n.\n\n    Args:\n        n: A non-negative integer.\n\n    Returns:\n        The factorial of n.\n    \"\"\"\n    # Requirement 4: Handle edge case factorial(0) = 1\n    if n == 0:\n        return 1\n    # As per problem statement, n is a non-negative integer.\n    # We don't explicitly handle negative numbers, assuming valid input.\n    # If negative numbers were possible, a ValueError would be appropriate.\n    # elif n < 0:\n    #     raise ValueError(\"Factorial is not defined for negative numbers\")\n    else:\n        # Calculate factorial iteratively for n > 0\n        result = 1\n        for i in range(1, n + 1):\n            result *= i\n        return result\n\n# Requirement 5: The program should read input from stdin\ntry:\n    input_n = int(input())\n\n    # Calculate the factorial\n    fact_result = factorial(input_n)\n\n    # Requirement 5: and print the result to stdout\n    print(fact_result)\n\nexcept ValueError:\n    print(\"Invalid input. Please enter an integer.\")\nexcept Exception as e:\n    print(f\"An unexpected error occurred: {e}\")",
+          "sandbox_result": {
+            "success": true,
+            "output": "",
+            "error": "",
+            "execution_time": 30.09
+          }
+        }
+      ],
+      "code": "def factorial(n: int) -> int:\n    \"\"\"\n    Calculates the factorial of a non-negative integer n.\n\n    Args:\n        n: A non-negative integer.\n\n    Returns:\n        The factorial of n.\n    \"\"\"\n    # Requirement 4: Handle edge case factorial(0) = 1\n    if n == 0:\n        return 1\n    # As per problem statement, n is a non-negative integer.\n    # We don't explicitly handle negative numbers, assuming valid input.\n    # If negative numbers were possible, a ValueError would be appropriate.\n    # elif n < 0:\n    #     raise ValueError(\"Factorial is not defined for negative numbers\")\n    else:\n        # Calculate factorial iteratively for n > 0\n        result = 1\n        for i in range(1, n + 1):\n            result *= i\n        return result\n\n# Requirement 5: The program should read input from stdin\ntry:\n    input_n = int(input())\n\n    # Calculate the factorial\n    fact_result = factorial(input_n)\n\n    # Requirement 5: and print the result to stdout\n    print(fact_result)\n\nexcept ValueError:\n    print(\"Invalid input. Please enter an integer.\")\nexcept Exception as e:\n    print(f\"An unexpected error occurred: {e}\")",
+      "sandbox_result": {
+        "success": true,
+        "output": "",
+        "error": "",
+        "execution_time": 30.09
+      }
+    },
+    {
+      "agent_id": "api_12",
+      "solution_number": 1,
+      "iterations": 1,
+      "history": [
+        {
+          "iteration": 1,
+          "code": "# Reasoning:\n# The problem requires a function to calculate the factorial of a non-negative integer.\n# The factorial of a number n (n!) is the product of all positive integers less than or equal to n.\n# Edge case: factorial(0) = 1.\n# The program should read input from stdin and print the result to stdout.\n\n# Action:\n# Write the Python code to implement the factorial function and handle input/output.",
+          "sandbox_result": {
+            "success": true,
+            "output": "",
+            "error": "",
+            "execution_time": 0.04
+          }
+        }
+      ],
+      "code": "# Reasoning:\n# The problem requires a function to calculate the factorial of a non-negative integer.\n# The factorial of a number n (n!) is the product of all positive integers less than or equal to n.\n# Edge case: factorial(0) = 1.\n# The program should read input from stdin and print the result to stdout.\n\n# Action:\n# Write the Python code to implement the factorial function and handle input/output.",
+      "sandbox_result": {
+        "success": true,
+        "output": "",
+        "error": "",
+        "execution_time": 0.04
+      }
+    },
+    {
+      "agent_id": "api_13",
+      "solution_number": 1,
+      "iterations": 1,
+      "history": [
+        {
+          "iteration": 1,
+          "code": "import sys\n\ndef factorial(n):\n    \"\"\"\n    Calculates the factorial of a non-negative integer n.\n\n    Args:\n        n: A non-negative integer.\n\n    Returns:\n        The factorial of n.\n    \"\"\"\n    if n < 0:\n        raise ValueError(\"Factorial is not defined for negative numbers\")\n    elif n == 0:\n        return 1\n    else:\n        result = 1\n        for i in range(1, n + 1):\n            result *= i\n        return result\n\nif __name__ == \"__main__\":\n    try:\n        num_str = sys.stdin.readline().strip()\n        num = int(num_str)\n        print(factorial(num))\n    except ValueError as e:\n        print(f\"Error: {e}\")\n    except Exception as e:\n        print(f\"An unexpected error occurred: {e}\")",
+          "sandbox_result": {
+            "success": true,
+            "output": "",
+            "error": "",
+            "execution_time": 30.05
+          }
+        }
+      ],
+      "code": "import sys\n\ndef factorial(n):\n    \"\"\"\n    Calculates the factorial of a non-negative integer n.\n\n    Args:\n        n: A non-negative integer.\n\n    Returns:\n        The factorial of n.\n    \"\"\"\n    if n < 0:\n        raise ValueError(\"Factorial is not defined for negative numbers\")\n    elif n == 0:\n        return 1\n    else:\n        result = 1\n        for i in range(1, n + 1):\n            result *= i\n        return result\n\nif __name__ == \"__main__\":\n    try:\n        num_str = sys.stdin.readline().strip()\n        num = int(num_str)\n        print(factorial(num))\n    except ValueError as e:\n        print(f\"Error: {e}\")\n    except Exception as e:\n        print(f\"An unexpected error occurred: {e}\")",
+      "sandbox_result": {
+        "success": true,
+        "output": "",
+        "error": "",
+        "execution_time": 30.05
+      }
+    },
+    {
+      "agent_id": "api_14",
+      "solution_number": 1,
+      "iterations": 1,
+      "history": [
+        {
+          "iteration": 1,
+          "code": "import sys\n\ndef factorial(n):\n    \"\"\"\n    Calculates the factorial of a non-negative integer.\n\n    Args:\n        n: A non-negative integer.\n\n    Returns:\n        The factorial of n.\n    \"\"\"\n    if n < 0:\n        # Although the problem statement specifies non-negative,\n        # it's good practice to consider this, though we won't explicitly\n        # handle it based on the prompt's constraints.\n        # For this problem, we assume n will be non-negative.\n        pass\n    elif n == 0:\n        return 1\n    else:\n        result = 1\n        for i in range(1, n + 1):\n            result *= i\n        return result\n\nif __name__ == \"__main__\":\n    # Read input from stdin\n    try:\n        input_str = sys.stdin.readline().strip()\n        number = int(input_str)\n\n        # Calculate and print the result\n        if number >= 0:\n            print(factorial(number))\n        else:\n            # As per problem, input is non-negative integer.\n            # If it were allowed, one might raise an error or return a specific value.\n            # For this problem, we assume valid input.\n            pass\n\n    except ValueError:\n        # Handle cases where input is not a valid integer\n        pass # Or print an error message, depending on desired behavior for invalid input.",
+          "sandbox_result": {
+            "success": true,
+            "output": "",
+            "error": "",
+            "execution_time": 30.05
+          }
+        }
+      ],
+      "code": "import sys\n\ndef factorial(n):\n    \"\"\"\n    Calculates the factorial of a non-negative integer.\n\n    Args:\n        n: A non-negative integer.\n\n    Returns:\n        The factorial of n.\n    \"\"\"\n    if n < 0:\n        # Although the problem statement specifies non-negative,\n        # it's good practice to consider this, though we won't explicitly\n        # handle it based on the prompt's constraints.\n        # For this problem, we assume n will be non-negative.\n        pass\n    elif n == 0:\n        return 1\n    else:\n        result = 1\n        for i in range(1, n + 1):\n            result *= i\n        return result\n\nif __name__ == \"__main__\":\n    # Read input from stdin\n    try:\n        input_str = sys.stdin.readline().strip()\n        number = int(input_str)\n\n        # Calculate and print the result\n        if number >= 0:\n            print(factorial(number))\n        else:\n            # As per problem, input is non-negative integer.\n            # If it were allowed, one might raise an error or return a specific value.\n            # For this problem, we assume valid input.\n            pass\n\n    except ValueError:\n        # Handle cases where input is not a valid integer\n        pass # Or print an error message, depending on desired behavior for invalid input.",
+      "sandbox_result": {
+        "success": true,
+        "output": "",
+        "error": "",
+        "execution_time": 30.05
+      }
+    },
+    {
+      "agent_id": "api_15",
+      "solution_number": 1,
+      "iterations": 1,
+      "history": [
+        {
+          "iteration": 1,
+          "code": "import sys\n\ndef factorial(n):\n    \"\"\"Calculates the factorial of a non-negative integer n.\"\"\"\n    if not isinstance(n, int) or n < 0:\n        # For robustness, though problem implies valid input, good practice.\n        raise ValueError(\"Input must be a non-negative integer.\")\n    \n    if n == 0:\n        return 1\n    \n    result = 1\n    for i in range(1, n + 1):\n        result *= i\n    return result\n\nif __name__ == \"__main__\":\n    try:\n        # Read input from stdin (assuming a single line input)\n        input_data = sys.stdin.read().strip()\n        \n        if not input_data:\n            # Handle case where input is empty\n            # print(\"Error: No input provided.\")\n            pass # Do nothing or handle as per strict requirement fulfillment\n        else:\n            n = int(input_data)\n            result = factorial(n)\n            print(result)\n            \n    except ValueError as e:\n        # print(f\"Error processing input: {e}\", file=sys.stderr)\n        pass # Suppress error printing if strict output format is required",
+          "sandbox_result": {
+            "success": true,
+            "output": "",
+            "error": "",
+            "execution_time": 30.08
+          }
+        }
+      ],
+      "code": "import sys\n\ndef factorial(n):\n    \"\"\"Calculates the factorial of a non-negative integer n.\"\"\"\n    if not isinstance(n, int) or n < 0:\n        # For robustness, though problem implies valid input, good practice.\n        raise ValueError(\"Input must be a non-negative integer.\")\n    \n    if n == 0:\n        return 1\n    \n    result = 1\n    for i in range(1, n + 1):\n        result *= i\n    return result\n\nif __name__ == \"__main__\":\n    try:\n        # Read input from stdin (assuming a single line input)\n        input_data = sys.stdin.read().strip()\n        \n        if not input_data:\n            # Handle case where input is empty\n            # print(\"Error: No input provided.\")\n            pass # Do nothing or handle as per strict requirement fulfillment\n        else:\n            n = int(input_data)\n            result = factorial(n)\n            print(result)\n            \n    except ValueError as e:\n        # print(f\"Error processing input: {e}\", file=sys.stderr)\n        pass # Suppress error printing if strict output format is required",
+      "sandbox_result": {
+        "success": true,
+        "output": "",
+        "error": "",
+        "execution_time": 30.08
+      }
+    },
+    {
+      "agent_id": "api_16",
+      "solution_number": 1,
+      "iterations": 1,
+      "history": [
+        {
+          "iteration": 1,
+          "code": "# Error: 429 RESOURCE_EXHAUSTED. You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50\nPlease retry in 19.807114801s.",
+          "sandbox_result": {
+            "success": true,
+            "output": "",
+            "error": "  File \"/sandbox/solution.py\", line 2\n    * Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50\n            ^\nSyntaxError: invalid syntax\n",
+            "execution_time": 0.05
+          }
+        }
+      ],
+      "code": "# Error: 429 RESOURCE_EXHAUSTED. You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50\nPlease retry in 19.807114801s.",
+      "sandbox_result": {
+        "success": true,
+        "output": "",
+        "error": "  File \"/sandbox/solution.py\", line 2\n    * Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50\n            ^\nSyntaxError: invalid syntax\n",
+        "execution_time": 0.05
+      }
+    },
+    {
+      "agent_id": "api_17",
+      "solution_number": 1,
+      "iterations": 1,
+      "history": [
+        {
+          "iteration": 1,
+          "code": "import sys\n\ndef factorial(n: int) -> int:\n    \"\"\"\n    Calculates the factorial of a non-negative integer n.\n\n    Args:\n        n: A non-negative integer.\n\n    Returns:\n        The factorial of n.\n    \"\"\"\n    if not isinstance(n, int) or n < 0:\n        # Although problem statement implies non-negative integers, good practice to validate\n        raise ValueError(\"Input must be a non-negative integer.\")\n    \n    # Handle the base case: factorial(0) = 1\n    if n == 0:\n        return 1\n    \n    # Calculate factorial iteratively\n    result = 1\n    for i in range(1, n + 1):\n        result *= i\n    \n    return result\n\nif __name__ == \"__main__\":\n    # Read input from stdin\n    try:\n        input_n_str = sys.stdin.readline().strip()\n        n = int(input_n_str)\n        \n        # Calculate the factorial\n        fact_result = factorial(n)\n        \n        # Print the result to stdout\n        print(fact_result)\n        \n    except ValueError as e:\n        print(f\"Error: Invalid input. Please provide a non-negative integer. {e}\", file=sys.stderr)\n    except Exception as e:\n        print(f\"An unexpected error occurred: {e}\", file=sys.stderr)",
+          "sandbox_result": {
+            "success": true,
+            "output": "",
+            "error": "",
+            "execution_time": 30.09
+          }
+        }
+      ],
+      "code": "import sys\n\ndef factorial(n: int) -> int:\n    \"\"\"\n    Calculates the factorial of a non-negative integer n.\n\n    Args:\n        n: A non-negative integer.\n\n    Returns:\n        The factorial of n.\n    \"\"\"\n    if not isinstance(n, int) or n < 0:\n        # Although problem statement implies non-negative integers, good practice to validate\n        raise ValueError(\"Input must be a non-negative integer.\")\n    \n    # Handle the base case: factorial(0) = 1\n    if n == 0:\n        return 1\n    \n    # Calculate factorial iteratively\n    result = 1\n    for i in range(1, n + 1):\n        result *= i\n    \n    return result\n\nif __name__ == \"__main__\":\n    # Read input from stdin\n    try:\n        input_n_str = sys.stdin.readline().strip()\n        n = int(input_n_str)\n        \n        # Calculate the factorial\n        fact_result = factorial(n)\n        \n        # Print the result to stdout\n        print(fact_result)\n        \n    except ValueError as e:\n        print(f\"Error: Invalid input. Please provide a non-negative integer. {e}\", file=sys.stderr)\n    except Exception as e:\n        print(f\"An unexpected error occurred: {e}\", file=sys.stderr)",
+      "sandbox_result": {
+        "success": true,
+        "output": "",
+        "error": "",
+        "execution_time": 30.09
+      }
+    },
+    {
+      "agent_id": "api_18",
+      "solution_number": 1,
+      "iterations": 1,
+      "history": [
+        {
+          "iteration": 1,
+          "code": "def factorial(n):\n    \"\"\"\n    Calculate the factorial of a non-negative integer n.\n\n    Args:\n        n (int): A non-negative integer.\n\n    Returns:\n        int: The factorial of n.\n    \"\"\"\n    if n == 0:\n        return 1\n    else:\n        result = 1\n        for i in range(1, n + 1):\n            result *= i\n        return result\n\nif __name__ == \"__main__\":\n    n = int(input())\n    print(factorial(n))",
+          "sandbox_result": {
+            "success": true,
+            "output": "",
+            "error": "",
+            "execution_time": 30.05
+          }
+        }
+      ],
+      "code": "def factorial(n):\n    \"\"\"\n    Calculate the factorial of a non-negative integer n.\n\n    Args:\n        n (int): A non-negative integer.\n\n    Returns:\n        int: The factorial of n.\n    \"\"\"\n    if n == 0:\n        return 1\n    else:\n        result = 1\n        for i in range(1, n + 1):\n            result *= i\n        return result\n\nif __name__ == \"__main__\":\n    n = int(input())\n    print(factorial(n))",
+      "sandbox_result": {
+        "success": true,
+        "output": "",
+        "error": "",
+        "execution_time": 30.05
+      }
+    },
+    {
+      "agent_id": "api_19",
+      "solution_number": 1,
+      "iterations": 1,
+      "history": [
+        {
+          "iteration": 1,
+          "code": "# Error: 429 RESOURCE_EXHAUSTED. You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50\nPlease retry in 8.704478191s.",
+          "sandbox_result": {
+            "success": true,
+            "output": "",
+            "error": "  File \"/sandbox/solution.py\", line 2\n    * Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50\n            ^\nSyntaxError: invalid syntax\n",
+            "execution_time": 0.04
+          }
+        }
+      ],
+      "code": "# Error: 429 RESOURCE_EXHAUSTED. You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50\nPlease retry in 8.704478191s.",
+      "sandbox_result": {
+        "success": true,
+        "output": "",
+        "error": "  File \"/sandbox/solution.py\", line 2\n    * Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50\n            ^\nSyntaxError: invalid syntax\n",
+        "execution_time": 0.04
+      }
+    },
+    {
+      "agent_id": "api_20",
+      "solution_number": 1,
+      "iterations": 1,
+      "history": [
+        {
+          "iteration": 1,
+          "code": "import sys\n\ndef factorial(n: int) -> int:\n    \"\"\"\n    Calculates the factorial of a non-negative integer n.\n    Handles the case factorial(0) = 1.\n    \"\"\"\n    # Requirement 4: Handle edge case 0! = 1\n    if n == 0:\n        return 1\n    \n    # Factorial calculation for n > 0\n    result = 1\n    for i in range(1, n + 1):\n        result *= i\n    \n    return result\n\nif __name__ == \"__main__\":\n    # Read input from stdin\n    try:\n        # Assuming the input is a single line containing the integer n\n        input_line = sys.stdin.read().strip()\n        if not input_line:\n            # Handle empty input gracefully if needed, though problem implies input exists\n            sys.exit(0)\n            \n        n = int(input_line)\n        \n        # Ensure input is non-negative as per problem definition\n        if n < 0:\n            raise ValueError(\"Input must be a non-negative integer.\")\n            \n        # Calculate and print the result\n        result = factorial(n)\n        print(result)\n        \n    except ValueError as e:\n        # Handle cases where input is not a valid integer or is negative\n        # print(f\"Error: {e}\", file=sys.stderr)\n        pass # In competitive programming environments, usually just focus on correct inputs.\n    except EOFError:\n        pass",
+          "sandbox_result": {
+            "success": true,
+            "output": "",
+            "error": "",
+            "execution_time": 30.1
+          }
+        }
+      ],
+      "code": "import sys\n\ndef factorial(n: int) -> int:\n    \"\"\"\n    Calculates the factorial of a non-negative integer n.\n    Handles the case factorial(0) = 1.\n    \"\"\"\n    # Requirement 4: Handle edge case 0! = 1\n    if n == 0:\n        return 1\n    \n    # Factorial calculation for n > 0\n    result = 1\n    for i in range(1, n + 1):\n        result *= i\n    \n    return result\n\nif __name__ == \"__main__\":\n    # Read input from stdin\n    try:\n        # Assuming the input is a single line containing the integer n\n        input_line = sys.stdin.read().strip()\n        if not input_line:\n            # Handle empty input gracefully if needed, though problem implies input exists\n            sys.exit(0)\n            \n        n = int(input_line)\n        \n        # Ensure input is non-negative as per problem definition\n        if n < 0:\n            raise ValueError(\"Input must be a non-negative integer.\")\n            \n        # Calculate and print the result\n        result = factorial(n)\n        print(result)\n        \n    except ValueError as e:\n        # Handle cases where input is not a valid integer or is negative\n        # print(f\"Error: {e}\", file=sys.stderr)\n        pass # In competitive programming environments, usually just focus on correct inputs.\n    except EOFError:\n        pass",
+      "sandbox_result": {
+        "success": true,
+        "output": "",
+        "error": "",
+        "execution_time": 30.1
+      }
+    },
+    {
+      "agent_id": "api_21",
+      "solution_number": 1,
+      "iterations": 1,
+      "history": [
+        {
+          "iteration": 1,
+          "code": "# Reasoning:\n# The problem requires a function to calculate the factorial of a non-negative integer.\n# The function should handle the base case where n is 0 (factorial(0) = 1).\n# For n > 0, the factorial is calculated by multiplying all integers from 1 to n.\n# The code should read input from stdin and print the result to stdout.\n\n# Action:\n# Write the Python code for the factorial function and the input/output handling.",
+          "sandbox_result": {
+            "success": true,
+            "output": "",
+            "error": "",
+            "execution_time": 0.08
+          }
+        }
+      ],
+      "code": "# Reasoning:\n# The problem requires a function to calculate the factorial of a non-negative integer.\n# The function should handle the base case where n is 0 (factorial(0) = 1).\n# For n > 0, the factorial is calculated by multiplying all integers from 1 to n.\n# The code should read input from stdin and print the result to stdout.\n\n# Action:\n# Write the Python code for the factorial function and the input/output handling.",
+      "sandbox_result": {
+        "success": true,
+        "output": "",
+        "error": "",
+        "execution_time": 0.08
+      }
+    },
+    {
+      "agent_id": "api_22",
+      "solution_number": 1,
+      "iterations": 1,
+      "history": [
+        {
+          "iteration": 1,
+          "code": "def factorial(n):\n    \"\"\"\n    Calculate the factorial of a non-negative integer n.\n    \"\"\"\n    if n == 0:\n        return 1\n    else:\n        return n * factorial(n-1)\n\nif __name__ == \"__main__\":\n    try:\n        n = int(input())\n        result = factorial(n)\n        print(result)\n    except ValueError:\n        print(\"Invalid input. Please enter a non-negative integer.\")",
+          "sandbox_result": {
+            "success": true,
+            "output": "",
+            "error": "",
+            "execution_time": 30.07
+          }
+        }
+      ],
+      "code": "def factorial(n):\n    \"\"\"\n    Calculate the factorial of a non-negative integer n.\n    \"\"\"\n    if n == 0:\n        return 1\n    else:\n        return n * factorial(n-1)\n\nif __name__ == \"__main__\":\n    try:\n        n = int(input())\n        result = factorial(n)\n        print(result)\n    except ValueError:\n        print(\"Invalid input. Please enter a non-negative integer.\")",
+      "sandbox_result": {
+        "success": true,
+        "output": "",
+        "error": "",
+        "execution_time": 30.07
+      }
+    },
+    {
+      "agent_id": "api_23",
+      "solution_number": 1,
+      "iterations": 1,
+      "history": [
+        {
+          "iteration": 1,
+          "code": "def factorial(n: int) -> int:\n    \"\"\"\n    Calculates the factorial of a non-negative integer n.\n\n    Args:\n        n: A non-negative integer.\n\n    Returns:\n        The factorial of n.\n    \"\"\"\n    if n == 0:\n        return 1\n    elif n < 0:\n        # As per problem statement, input is non-negative, but good to consider.\n        # For this problem, we assume valid non-negative input.\n        raise ValueError(\"Factorial is not defined for negative numbers.\")\n    else:\n        result = 1\n        for i in range(1, n + 1):\n            result *= i\n        return result\n\nif __name__ == \"__main__\":\n    # Read input from stdin\n    try:\n        num = int(input())\n        # Calculate factorial\n        fact_result = factorial(num)\n        # Print result to stdout\n        print(fact_result)\n    except ValueError as e:\n        print(f\"Error: Invalid input. Please enter a non-negative integer. {e}\")",
+          "sandbox_result": {
+            "success": true,
+            "output": "",
+            "error": "",
+            "execution_time": 30.09
+          }
+        }
+      ],
+      "code": "def factorial(n: int) -> int:\n    \"\"\"\n    Calculates the factorial of a non-negative integer n.\n\n    Args:\n        n: A non-negative integer.\n\n    Returns:\n        The factorial of n.\n    \"\"\"\n    if n == 0:\n        return 1\n    elif n < 0:\n        # As per problem statement, input is non-negative, but good to consider.\n        # For this problem, we assume valid non-negative input.\n        raise ValueError(\"Factorial is not defined for negative numbers.\")\n    else:\n        result = 1\n        for i in range(1, n + 1):\n            result *= i\n        return result\n\nif __name__ == \"__main__\":\n    # Read input from stdin\n    try:\n        num = int(input())\n        # Calculate factorial\n        fact_result = factorial(num)\n        # Print result to stdout\n        print(fact_result)\n    except ValueError as e:\n        print(f\"Error: Invalid input. Please enter a non-negative integer. {e}\")",
+      "sandbox_result": {
+        "success": true,
+        "output": "",
+        "error": "",
+        "execution_time": 30.09
+      }
+    },
+    {
+      "agent_id": "api_24",
+      "solution_number": 1,
+      "iterations": 1,
+      "history": [
+        {
+          "iteration": 1,
+          "code": "def factorial(n):\n    \"\"\"\n    Calculate the factorial of a non-negative integer n.\n    \"\"\"\n    if n == 0:\n        return 1\n    else:\n        result = 1\n        for i in range(1, n + 1):\n            result *= i\n        return result\n\nif __name__ == \"__main__\":\n    n = int(input())\n    result = factorial(n)\n    print(result)",
+          "sandbox_result": {
+            "success": true,
+            "output": "",
+            "error": "",
+            "execution_time": 30.06
+          }
+        }
+      ],
+      "code": "def factorial(n):\n    \"\"\"\n    Calculate the factorial of a non-negative integer n.\n    \"\"\"\n    if n == 0:\n        return 1\n    else:\n        result = 1\n        for i in range(1, n + 1):\n            result *= i\n        return result\n\nif __name__ == \"__main__\":\n    n = int(input())\n    result = factorial(n)\n    print(result)",
+      "sandbox_result": {
+        "success": true,
+        "output": "",
+        "error": "",
+        "execution_time": 30.06
+      }
+    }
+  ]
+}

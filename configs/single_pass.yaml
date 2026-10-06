@@ -1,0 +1,25 @@
+method: single_pass
+benchmark: benchmarks/example.json
+output_dir: results
+seed: 7
+num_agents: 1
+max_refinement_rounds: 0
+selection_strategy: first_verified
+cycle_agent_pool: true
+budget:
+  model_calls: 1
+  wall_clock_seconds: null
+execution:
+  mode: auto
+  timeout_seconds: 30
+  memory_limit_mb: 512
+  docker_image: \${VMAR_DOCKER_IMAGE:-python:3.12-slim}
+agents:
+  - agent_id: agent_01
+    provider: google
+    model: \${VMAR_MODEL_A:-gemini-3.8-flash}
+    api_key_env: GEMINI_API_KEY
+    prompt_variant: standard
+    role: single-pass solver
+    temperature: 0.2
+    max_output_tokens: 2048

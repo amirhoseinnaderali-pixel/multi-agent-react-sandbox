@@ -1,0 +1,25 @@
+{
+  "_note": "Legacy compatibility example. New experiments should use configs/*.yaml.",
+  "apis": [
+    {
+      "agent_id": "agent_01",
+      "type": "google",
+      "key": "SET_VIA_ENVIRONMENT_INSTEAD",
+      "model": "gemini-3.8-flash"
+    }
+  ],
+  "test_cases": [
+    {
+      "input": "5\n",
+      "expected_output": "120"
+    },
+    {
+      "input": "0\n",
+      "expected_output": "1"
+    },
+    {
+      "input": "10\n",
+      "expected_output": "3628800"
+    }
+  ]
+}
